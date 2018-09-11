@@ -1,0 +1,98 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set content %}
+
+{% if workflowId is not defined %}
+  {% set workflowId = null %}
+{% endif %}
+{% if workflow is not defined %}
+    {% if workflowId %}
+        {% set workflow = craft.lynnworkflow.getWorkflowById(workflowId) %}
+        {% if not workflow %}{% exit 404 %}{% endif %}
+    {% else %}
+        {% set workflow = null %}
+    {% endif %}
+{% endif %}
+
+{% set title = workflow ? workflow.name : "New Workflow"|t %}
+
+{% set crumbs = [
+    { label: "Workflow management"|t, url: url('lynn-workflow') },
+    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+] %}
+
+{% set states = craft.lynnworkflow.getAllStates(workflowId) %}
+
+{% block content %}
+    <div class="buttons">
+        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/edit') }}" class="btn edit icon">{{ "Edit this workflow"|t }}</a>
+    </div>
+
+
+    <p id="nostates"{% if states|length %} class="hidden"{% endif %}>
+        {{ "No states exist yet - create one!"|t }}
+    </p>
+
+    {% if states|length %}
+    <form method="post" action="" accept-charset="UTF-8">
+        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="action" value="lynn-workflow/workflows/save-workflow" />
+        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}" />
+        <input type="hidden" name="workflowId" value="{{ workflowId }}" />
+        {% set stateOptions = [{ value: null, label: 'None' | t}] %}
+        {% for state in states %}
+          {% set stateOptions = [{ value: state.id, label: state.name }] | merge(stateOptions) %}
+        {% endfor %}
+        {{ forms.selectField({
+          label: 'Default state' | t,
+          instructions: 'Select the default state for this workflow.' | t,
+          name: 'workflow[defaultState]',
+          value: workflow ? workflow.defaultState : null,
+          options: stateOptions,
+          errors: workflow ? workflow.errors('defaultState') : null,
+          id: 'workflowDefaultState',
+        }) }}
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+        </div>
+    </form>
+    <br /><br />
+    <h3>States:</h3>
+
+        <table id="states" class="data">
+            <thead>
+                <th scope="col">{{ "Name"|t }}</th>
+                <th class="thin"></th>
+            </thead>
+            <tbody>
+
+                {% for state in states %}
+                    <tr data-workflow="{{ workflow.id }}" data-id="{{ state.id }}" data-name="{{ state.name|t }}">
+                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
+                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+    <div class="buttons">
+        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/new') }}" class="btn add icon">{{ "New State"|t }}</a>
+    </div>
+
+{% endblock %}
+
+{% set js %}
+    new Craft.AdminTable({
+        tableSelector: '#states',
+        noObjectsSelector: '#nostates',
+        deleteAction: 'lynn-workflow/states/delete-state'
+    });
+{% endset %}
+{% includeJs js %}
+
+
+{% endset %}

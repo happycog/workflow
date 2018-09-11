@@ -1,0 +1,29 @@
+{% extends parentLayout ?? '_layouts/cp' %}
+
+{% do view.registerAssetBundle('therefinery\\lynnworkflow\\assetbundles\\LynnWorkflowAsset') %}
+
+{% set tabs = {
+    "lynn-workflow": { label: 'Overview' | t('lynn-workflow'), url: url('lynn-workflow') },
+    "Workflows": { label: 'Workflows' | t('lynn-workflow'), url: url('lynn-workflow/workflows') },
+    drafts: { label: 'Drafts' | t('lynn-workflow'), url: url('lynn-workflow/drafts') },
+    settings: { label: 'Settings' | t('lynn-workflow'), url: url('lynn-workflow/settings') },
+} %}
+
+{% set title = 'Lynn Workflow ' ~ tabs[selectedTab].label %}
+
+{% set content %}
+    {% block blockContent %}
+
+    {% endblock %}
+
+    <hr>
+
+    <div id="plugin-footer">
+        <div class="footer-left">
+            {% block footerButton %}
+
+            {% endblock %}
+        </div>
+
+    </div>
+{% endset %}

@@ -1,0 +1,41 @@
+{
+    "name": "therefinery/lynnworkflow",
+    "description": "Workflow solution for Lynn University",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "lynn workflow"
+    ],
+    "support": {
+        "docs": "???",
+        "issues": "???"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Phillip Lamb",
+            "homepage": "https://github.com/the-refinery"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "therefinery\\lynnworkflow\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "LynnWorkflow",
+        "handle": "lynnworkflow",
+        "schemaVersion": "2.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "???",
+        "class": "therefinery\\lynnworkflow\\LynnWorkflow"
+    }
+}

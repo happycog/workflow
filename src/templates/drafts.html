@@ -1,0 +1,52 @@
+{% extends 'lynn-workflow/_layouts' %}
+{% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+    { label: 'Lynn Workflow' | t('lynn-workflow'), url: url('lynn-workflow') },
+    { label: 'Drafts' | t('lynn-workflow'), url: url('lynn-workflow/drafts') },
+] %}
+
+{% set selectedTab = 'drafts' %}
+
+{% block blockContent %}
+
+{% if entries | length %}
+    <table id="entries" class="data fullwidth collapsible">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Entry' | t('lynn-workflow') }}</th>
+                <th scope="col">{{ 'Date Created' | t('lynn-workflow') }}</th>
+                <th scope="col">{{ 'Date Updated' | t('lynn-workflow') }}</th>
+                <td class="thin"></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+                <tr data-id="{{ entry.id }}">
+                    <th scope="row" data-title="{{ 'Name' | t('lynn-workflow') }}">
+                        {% set url = entry.cpEditUrl %}
+
+                        {% if craft.app.isMultiSite() %}
+                            {% set segments = entry.cpEditUrl | split('/') %}
+                            {% set url = segments | without(segments | last) | join('/') %}
+                        {% endif %}
+
+                        <a href="{{ url }}/drafts/{{ entry.draftId }}">{{ entry.title }}</a>
+                    </th>
+
+                    <td data-title="{{ 'Date created' | t('lynn-workflow') }}">
+                        {{ entry.dateCreated | date('Y-m-d H:i:s') }}
+                    </td>
+
+                    <td data-title="{{ 'Date updated' | t('lynn-workflow') }}">
+                        {{ entry.dateUpdated | date('Y-m-d H:i:s') }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>{{ "No draft entries." | t('lynn-workflow') }}</p>
+{% endif %}
+
+{% endblock %}

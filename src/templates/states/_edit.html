@@ -1,0 +1,123 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set centered = true %}
+
+{% if not workflowId %}{% exit 404 %}{% endif %}
+{% set crumbs = [
+    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
+    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+] %}
+
+
+{% if workflow is not defined %}
+    {% if workflowId %}
+        {% set workflow = craft.lynnworkflow.getWorkflowById(workflowId) %}
+        {% if not workflow %}{% exit 404 %}{% endif %}
+    {% else %}
+        {% set workflow = null %}
+    {% endif %}
+{% endif %}
+
+{% if stateId is not defined %}{% set stateId = null %}{% endif %}
+{% if state is not defined %}
+    {% if stateId %}
+        {% set state = craft.lynnworkflow.getStateById(stateId) %}
+        {% set title = workflow ? workflow.name~" - State: "~state.name %}
+        {% set crumbs = [
+            { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
+            { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
+            { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) },
+            { label: "State: "|t ~ " " ~ state.name, url: url('lynn-workflow/workflows/' ~ workflow.id ~ '/states/' ~ state.id) }
+        ] %}
+        {% if not state %}{% exit 404 %}{% endif %}
+    {% else %}
+        {% set state = null %}
+        {% set crumbs = [
+            { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
+            { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
+            { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) }
+        ] %}
+
+        {% set title = workflow ? workflow.name~" - New State" : "New State"|t %}
+    {% endif %}
+{% endif %}
+
+
+{% set content %}
+    <form method="post" action="" accept-charset="UTF-8">
+        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="action" value="lynn-workflow/states/save-state" />
+        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}" />
+        <input type="hidden" name="state[workflowId]" value="{{ state ? state.workflowId : workflowId }}" />
+        <input type="hidden" name="stateId" value="{{ stateId }}" />
+
+        {% set grouplist = [] %}
+        {% for group in craft.userGroups.getAllGroups() %}
+            {% if workflow.groups == '*' %}
+              {# List all groups #}
+              {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}
+            {% else %}
+              {# filter only checked groups #}
+              {% if group.id in workflow.groups|values %}
+                {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}
+              {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {{
+          forms.textField({
+            label: 'State Name'|t,
+            required: true,
+            name: 'state[name]',
+            value: state ? state.name : null,
+            errors: state ? state.errors('name') : null,
+          })
+        }}
+
+        {{
+          forms.selectField({
+            label: 'Weight'|t,
+            required: true,
+            name: 'state[weight]',
+            value: state ? state.weight : null,
+            options: ["0", "1", "2", "3", "4", "5", "6", "7", "8"],
+            errors: state ? state.errors('weight') : null,
+          })
+        }}
+
+        {{ forms.checkboxSelectField({
+            label: 'Group VIEW Permissions' | t,
+            instructions: 'Select which groups can VIEW drafts in this state.' | t,
+            id: 'viewGroups',
+            name: 'state[viewGroups]',
+            values: state ? state.viewGroups : null,
+            errors: state ? state.errors('viewGroups') : null,
+            options: grouplist,
+        }) }}
+
+        {{ forms.checkboxSelectField({
+            label: 'Group EDIT Permissions' | t,
+            instructions: 'Select which groups can EDIT drafts in this state.' | t,
+            id: 'editGroups',
+            name: 'state[editGroups]',
+            values: state ? state.editGroups : null,
+            errors: state ? state.errors('editGroups') : null,
+            options: grouplist,
+        }) }}
+
+        {{ forms.checkboxSelectField({
+            label: 'Group DELETE Permissions' | t,
+            instructions: 'Select which groups can DELETE drafts in this state.' | t,
+            id: 'deleteGroups',
+            name: 'state[deleteGroups]',
+            values: state ? state.deleteGroups : null,
+            errors: state ? state.errors('deleteGroups') : null,
+            options: grouplist,
+        }) }}
+
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+        </div>
+    </form>
+
+{% endset %}

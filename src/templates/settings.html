@@ -1,0 +1,68 @@
+{% extends 'lynn-workflow/_layouts' %}
+{% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+    { label: 'Lynn Workflow' | t('lynn-workflow'), url: url('lynn-workflow') },
+    { label: 'Settings' | t('lynn-workflow'), url: url('lynn-workflow/settings') },
+] %}
+
+{% set selectedTab = 'settings' %}
+
+{% set fullPageForm = true %}
+
+{% block blockContent %}
+
+<input type="hidden" name="action" value="plugins/save-plugin-settings">
+<input type="hidden" name="pluginHandle" value="lynn-workflow">
+
+{% namespace 'settings' %}
+
+{% set workflows = [{ value: FALSE, label: 'None' | t}] %}
+{% for workflow in craft.lynnworkflow.getAllWorkflows() %}
+  {% set workflows = [{ value: workflow.id, label: workflow.name }] | merge(workflows) %}
+{% endfor %}
+
+{% set entries = [] %}
+{% for section in craft.sections.getAllSections() %}
+  <h2>Section: {{ section.name }}</h2>
+  <p>Select the workflow that should apply to this section.</p>
+  {{ forms.selectField({
+    id: 'enabledWorkflows[' ~ section.id ~ ']',
+    name: 'enabledWorkflows[' ~ section.id ~ ']',
+    value: settings.enabledWorkflows ? settings.enabledWorkflows[section.id] : FALSE,
+    errors: settings.getErrors('enabledWorkflows'),
+    options: workflows,
+  }) }}
+
+  {% set entryTypes = section.getEntryTypes() %}
+  {% if entryTypes is defined %}
+    <p>Set the workflow for this section's entry types. If set to "None" and this section has a workflow, that workflow will apply.</p>
+  {% endif %}
+  {% for entryType in entryTypes %}
+    {% set settingEntryId = 'enabledWorkflows-' ~ section.id ~ '-' ~ entryType.id %}
+    {% set workflowEntryDefaultValue = FALSE %}
+    {% if settings.enabledWorkflows is defined %}
+      {% if settings.enabledWorkflows[section.id ~ '-' ~ entryType.id] is defined %}
+        {% set workflowEntryDefaultValue = settings.enabledWorkflows[section.id ~ '-' ~ entryType.id] %}
+      {% else %}
+        {% if settings.enabledWorkflows[section.id] is defined %}
+          {% set workflowEntryDefaultValue = settings.enabledWorkflows[section.id] %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+    {{ forms.selectField({
+      label: 'Entry type: ' | t ~ entryType.name,
+      id: 'enabledWorkflows[' ~ section.id ~ '-' ~ entryType.id ~']',
+      name: 'enabledWorkflows[' ~ section.id ~ '-' ~ entryType.id ~']',
+      value: workflowEntryDefaultValue,
+      errors: settings.getErrors('enabledWorkflows'),
+      options: workflows,
+    }) }}
+
+  {% endfor %}
+  <hr />
+{% endfor %}
+
+{% endnamespace %}
+
+{% endblock %}

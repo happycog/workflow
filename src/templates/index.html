@@ -1,0 +1,12 @@
+{% set parentLayout = '_layouts/elementindex' %}
+{% extends 'lynn-workflow/_layouts' %}
+
+{% set crumbs = [
+    { label: 'Lynn Workflow' | t('lynn-workflow'), url: url('lynn-workflow') },
+    { label: 'Overview' | t('lynn-workflow'), url: url('lynn-workflow') },
+] %}
+
+{% set elementType = 'therefinery\\lynnworkflow\\elements\\Submission' %}
+{% set selectedTab = 'lynn-workflow' %}
+{% set showStatusMenu = true %}
+{% set title = 'Workflow' %}

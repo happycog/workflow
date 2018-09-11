@@ -1,0 +1,73 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% if workflowId is not defined %}{% set workflowId = null %}{% endif %}
+{% if workflow is not defined %}
+    {% if workflowId %}
+        {% set workflow = craft.lynnworkflow.getWorkflowById(workflowId) %}
+        {% if not workflow %}{% exit 404 %}{% endif %}
+    {% else %}
+        {% set workflow = null %}
+    {% endif %}
+{% endif %}
+
+{% set content %}
+
+{% set state = craft.lynnworkflow.getStateById(stateId) %}
+
+{% set title = workflow.name ~ " - " ~ state ? "State"|t ~ ": " ~ state.name : "New State"|t %}
+
+{% set crumbs = [
+    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
+    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
+    { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) }
+] %}
+{% set transitions = craft.lynnworkflow.getAllTransitions(workflowId, stateId) %}
+
+{% block content %}
+<div class="buttons">
+    <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="btn edit icon">{{ "Edit this state"|t }}</a>
+</div>
+
+    <p id="notransitions"{% if transitions|length %} class="hidden"{% endif %}>
+        {{ "No transitions exist yet - create one!"|t }}
+    </p>
+
+    {% if transitions|length %}
+        <h3>Transitions:</h3>
+        <table id="transitions" class="data">
+            <thead>
+                <th scope="col">{{ "Name"|t }}</th>
+                <th class="thin"></th>
+            </thead>
+            <tbody>
+
+                {% for transition in transitions %}
+                    <tr data-workflow="{{ workflow.id }}" data-state="{{ state.id }}" data-id="{{ transition.id }}" data-name="{{ transition.name|t }}">
+                        <td>{{ transition.name }}</td>
+                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/'~transition.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+    <div class="buttons">
+        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/new') }}" class="btn add icon">{{ "New Transition"|t }}</a>
+    </div>
+
+{% endblock %}
+
+{% set js %}
+    new Craft.AdminTable({
+        tableSelector: '#transitions',
+        noObjectsSelector: '#notransitions',
+        deleteAction: 'lynn-workflow/transitions/delete-transition'
+    });
+{% endset %}
+{% includeJs js %}
+
+
+{% endset %}

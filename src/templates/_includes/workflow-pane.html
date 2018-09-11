@@ -1,0 +1,232 @@
+{% do view.registerAssetBundle('therefinery\\lynnworkflow\\assetbundles\\LynnWorkflowAsset') %}
+
+{% import "_includes/forms" as forms %}
+
+{% set allowView = false %}
+{% set allowSave = false %}
+{% set allowDelete = false %}
+{% set isVersion = false %}
+<div class="pane workflow-pane">
+{% if submission is not defined %}
+  {% set sectionHandle = section.handle %}
+  {% set isSingle = section.type == 'single' %}
+  {% set isVersion = false %}
+  {% set isDraft = entry.id %}
+
+  {% set canPublish = currentUser.can('publishEntries'~permissionSuffix) %}
+  {% set canSave = (
+    (entry.id or currentUser.can('createEntries'~permissionSuffix)) and
+    (not entry.id or not entry.enabled or canPublish) and
+    (isSingle or entry.authorId == currentUser.id or currentUser.can('publishPeerEntries'~permissionSuffix))
+  ) %}
+
+  {# this is the case for entries which are not in a workflow #}
+  {% set allowView = true %}
+  {% set allowSave = true %}
+  {% set allowDelete = true %}
+  {% if hasExistingDrafts == true and isDraft == false %}
+    {{ "This entry already has a draft. Please select it in order to view the workflow."|t }}
+  {% elseif canSave == true and isDraft == false and isVersion == false %}
+    {{ "This entry has no current draft in a workflow. Would you like to create one?"|t }}
+    <br />
+    <div class="btngroup">
+      <a class="btn formsubmit" data-action="entryRevisions/saveDraft" data-redirect="{{ baseCpEditUrl }}/drafts/{draftId}">{{ 'Save as a draft'|t }}</a>
+    </div>
+  {% endif %}
+
+{% endif %}
+
+{% for submission in submissions %}
+  {% if isDraft == false and isVersion == true %}
+    {% if submission.notes is defined and submission.notes is not empty %}
+      <h3>Previous notes:</h3>
+      {% for note in submission.notes|reverse %}
+      <p>
+        <span style="font-size:0.7em;"><em>Transition "{{ note.current_transition }}" from {{ note.current_state }} to {{ note.target_state }}</em></span><br />
+        {{ note.note }}
+      </p>
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    {% set state = craft.lynnworkflow.getStateById(submission.stateId) %}
+    {% if state == false %}
+      {% set allowView = true %}
+      {% set allowSave = true %}
+      {% set allowDelete = true %}
+    {% else %}
+      {% set workflow = craft.lynnworkflow.getWorkflowById(state.workflowId) %}
+      {% set transitions = craft.lynnworkflow.getAllTransitions(state.workflowId, submission.stateId) %}
+      {% set bypass = false %}
+      {% if (currentUser.id in workflow.bypass) or (currentUser.admin) %}
+        {% set bypass = true %}
+        {% set allowView = true %}
+        {% set allowSave = true %}
+        {% set allowDelete = true %}
+      {% else %}
+        {# view permissions #}
+        {% set allowView = false %}
+        {% if state.viewGroups == '*' %}
+          {% for group in workflow.groups %}
+            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowView = true %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for viewGroup in state.viewGroups %}
+            {% set groupObject = craft.userGroups.getGroupById(viewGroup) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowView = true %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if allowView == false %}
+          {% exit 403 %}
+        {% endif %}
+
+        {# save permissions #}
+        {% set allowSave = false %}
+        {% if state.editGroups == '*' %}
+          {% for group in workflow.groups %}
+            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowSave = true %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for editGroup in state.editGroups %}
+            {% set groupObject = craft.userGroups.getGroupById(editGroup) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowSave = true %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        {# delete permissions #}
+        {% set allowDelete = false %}
+        {% if state.deleteGroups == '*' %}
+          {% for group in workflow.groups %}
+            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowDelete = true %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for deleteGroup in state.deleteGroups %}
+            {% set groupObject = craft.userGroups.getGroupById(deleteGroup) %}
+            {% if (currentUser.isInGroup(groupObject)) %}
+              {% set allowDelete = true %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+          <div class="field">
+              <div class="heading">
+                  <label>{{ state.name | t }}</label>
+              </div>
+              {% set transitionsAvailable = false %}
+              {% for transition in transitions %}
+                {% if bypass == false %}
+                  {% set isAllowed = false %}
+                {% else %}
+                  {% set isAllowed = true %}
+                {% endif %}
+                {% if transition.groups == '*' %}
+                  {% for group in workflow.groups %}
+                    {% set groupObject = craft.userGroups.getGroupById(group) %}
+                    {% if (currentUser.isInGroup(groupObject)) %}
+                      {% set isAllowed = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% for group in transition.groups %}
+                    {% set groupObject = craft.userGroups.getGroupById(group) %}
+                    {% if (currentUser.isInGroup(groupObject)) %}
+                      {% set isAllowed = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% if isAllowed == true %}
+                  {% set transitionsAvailable = true %}
+                    <div class="instructions">
+                        <p>{{ transition.description | t }}</p>
+                    </div>
+                    <br />
+                    <div class="btngroup">
+                        {% set draftId = context.draftId | default('') %}
+                        <input type="hidden" name="submissionId" value="{{ submission.id }}">
+                        <input type="hidden" name="entryId" value="{{ context.entry.id }}">
+                        <input type="hidden" name="draftId" value="{{ draftId }}">
+                        <input type="hidden" name="workflowId" value="{{ workflow.id }}">
+                        <input type="hidden" name="stateId" value="{{ state.id }}">
+
+                        <a data-action="lynn-workflow/base/execute-transition" data-param="targetState" data-value="{{ transition.id }}-{{ transition.targetState }}"class="btn formsubmit">{{ transition.name | t }}</a>
+                    </div>
+                  {% endif %}
+                  <br /><br />
+                  {% endfor %}
+                  {% if transitionsAvailable == false %}
+                    {{ "This item is currently in the"|t ~ " " ~ state.name | t ~ " " ~ "state"|t ~ "."}}
+                  {% else %}
+                    {{ forms.textareaField({
+                        placeholder: 'Notes about your response.' | t,
+                        id: 'notes',
+                        name: 'notes',
+                        rows: 2,
+                    }) }}
+                    {{ forms.textField({
+                      label: 'Custom recipients'|t,
+                      required: false,
+                      name: 'customRecipients',
+                      instructions: 'If you wish to notify anyone not already defined on the transition configuration, enter their email addresses in this field, separated by commas.' | t,
+                    }) }}
+                  {% endif %}
+
+
+
+                  {% if submission.notes is defined and submission.notes is not empty %}
+                    <h3>Previous notes:</h3>
+                    {% for note in submission.notes|reverse %}
+                    <p>
+                      <span style="font-size:0.7em;"><em>Transition "{{ note.current_transition }}" from {{ note.current_state }} to {{ note.target_state }}</em></span><br />
+                      {{ note.note }}
+                    </p>
+                    {% endfor %}
+                  {% endif %}
+
+                </div>
+
+    {% endif %}
+  {% endif %}
+{% endfor %}
+</div>
+
+{% if allowSave == false or allowDelete == false %}
+  {% if allowSave == false %}
+  {# Disable saving if there's a submission #}
+  {# Hide first so we don't see a flicker #}
+  {% set css %}
+    #extra-headers .btngroup { display: none; }
+  {% endset %}
+  {% includeCss css first %}
+  {% endif %}
+
+  {% if allowSave == false %}
+  {% set js %}
+    $('form#container').on('submit', function(e) {
+      e.preventDefault();
+      alert('Not allowed');
+    });
+
+    $('#page-header #extra-headers').html('');
+
+  {% endset %}
+  {% endif %}
+  {% if allowDelete == false %}
+    {% set js %}
+      $('form#container .formsubmit[data-action="entryRevisions/deleteDraft"]').remove();
+    {% endset %}
+  {% endif %}
+
+  {% includeJs js first %}
+{% endif %}

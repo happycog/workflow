@@ -1,0 +1,149 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set centered = true %}
+
+{% if not workflowId %}{% exit 404 %}{% endif %}
+{% if not stateId %}{% exit 404 %}{% endif %}
+
+{% if workflow is not defined %}
+    {% if workflowId %}
+        {% set workflow = craft.lynnworkflow.getWorkflowById(workflowId) %}
+        {% if not workflow %}{% exit 404 %}{% endif %}
+    {% else %}
+      {% exit 404 %}
+    {% endif %}
+{% endif %}
+
+{% if state is not defined %}
+    {% if stateId %}
+        {% set state = craft.lynnworkflow.getStateById(stateId) %}
+        {% set title = workflow ? workflow.name~" - State "~state.name : "New State"|t %}
+        {% if not state %}{% exit 404 %}{% endif %}
+    {% else %}
+      {% exit 404 %}
+    {% endif %}
+{% endif %}
+
+{% set crumbs = [
+    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
+    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
+    { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) },
+    { label: "State"|t ~ ": " ~ state.name, url: url('lynn-workflow/workflows/' ~ workflow.id ~ '/states/' ~ state.id) }
+] %}
+
+{% if transitionId is not defined %}{% set transitionId = null %}{% endif %}
+{% if transition is not defined %}
+    {% if transitionId %}
+        {% set transition = craft.lynnworkflow.getTransitionById(transitionId) %}
+        {% set title = workflow ? workflow.name~" - State: "~state.name~" - Transition: "~transition.name : "New Transition"|t %}
+        {% if not transition %}{% exit 404 %}{% endif %}
+    {% else %}
+        {% set transition = null %}
+        {% set title = workflow ? workflow.name~" - State: "~state.name~" - New Transition" : "New Transition"|t %}
+    {% endif %}
+{% endif %}
+
+{% set content %}
+
+    <form method="post" action="" accept-charset="UTF-8">
+        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="action" value="lynn-workflow/transitions/save-transition" />
+        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}/states/{stateId}" />
+        <input type="hidden" name="transition[workflowId]" value="{{ transition ? transition.workflowId : workflowId }}" />
+        <input type="hidden" name="transition[stateId]" value="{{ transition ? transition.stateId : stateId }}" />
+        <input type="hidden" name="transitionId" value="{{ transitionId }}" />
+
+        {{
+          forms.textField({
+            label: 'Transition Name'|t,
+            required: true,
+            name: 'transition[name]',
+            value: transition ? transition.name : null,
+            errors: transition ? transition.errors('name') : null,
+          })
+        }}
+
+        {{
+          forms.textArea({
+            placeholder: 'This text will be displayed on the entry page.' | t,
+            required: true,
+            name: 'transition[description]',
+            value: transition ? transition.description : null,
+            errors: transition ? transition.errors('description') : null,
+          })
+        }}
+
+        {% set grouplist = [] %}
+        {% set recipientGrouplist = [{ label: "None" | t, value: "none" }] %}
+        {% for group in craft.userGroups.getAllGroups() %}
+            {% if group.id in workflow.groups|values %}
+              {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}
+              {% set recipientGrouplist = recipientGrouplist | merge([{ label: group.name, value: group.id }]) %}
+            {% endif %}
+        {% endfor %}
+
+        {% set stateList = [] %}
+        {% for stateListItem in craft.lynnworkflow.getAllStates(workflowId) %}
+          {% set stateList = stateList | merge([{ label: stateListItem.name, value: stateListItem.id }]) %}
+        {% endfor %}
+
+        {{ forms.checkboxSelectField({
+            label: 'Enabled Groups' | t,
+            instructions: 'Select which groups can utilize this transition.' | t,
+            id: 'groups',
+            name: 'transition[groups]',
+            values: transition ? transition.groups : null,
+            errors: transition ? transition.errors('groups') : null,
+            options: grouplist,
+            required: true,
+        }) }}
+
+        {{ forms.checkboxSelectField({
+            label: 'Target notification group' | t,
+            instructions: 'Select which group should recieve a notification after this transition.' | t,
+            id: 'notificationRecipients',
+            name: 'transition[notificationRecipients]',
+            values: transition ? transition.notificationRecipients : "",
+            errors: transition ? transition.errors('notificationRecipients') : null,
+            options: recipientGrouplist,
+            required: true,
+        }) }}
+
+        {{ forms.radioGroupField({
+            label: 'Notify the author of the draft?' | t,
+            instructions: 'Check this box if the author of the draft should receive a notification.' | t,
+            id: 'notifyAuthor',
+            name: 'transition[notifyAuthor]',
+            value: transition ? transition.notifyAuthor : null,
+            errors: transition ? transition.errors('notifyAuthor') : null,
+            options: [{ label: "No", value: 0 }, { label: "Yes", value: 1 }],
+            required: true,
+        }) }}
+
+        <br /><br />
+        {{
+          forms.textArea({
+            placeholder: 'Enter the text of the notification that will be sent for this transition. Available tokens are {{ submission.title }}, {{ submission.author }}, {{ submission.transitionName }}, {{ submission.currentState }} and {{ submission.targetState }}.' | t,
+            required: true,
+            name: 'transition[notificationText]',
+            value: transition ? transition.notificationText : null,
+            errors: transition ? transition.errors('notificationText') : null,
+          })
+        }}
+
+        {{ forms.selectField({
+          label: 'Target state' | t,
+          instructions: 'Select the target state for this transition.' | t,
+          id: 'targetState',
+          name: 'transition[targetState]',
+          value: transition ? transition.targetState : null,
+          errors: transition ? transition.errors('targetState') : null,
+          options: stateList,
+        }) }}
+
+        <div class="buttons">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+        </div>
+    </form>
+
+{% endset %}
