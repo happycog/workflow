@@ -44,7 +44,7 @@ class Submission extends Element
 
     public static function displayName(): string
     {
-        return Craft::t('lynn-workflow', 'Lynn Workflow Submission');
+        return Craft::t('lynnworkflow', 'Lynn Workflow Submission');
     }
 
     public static function refHandle()
@@ -75,10 +75,10 @@ class Submission extends Element
     public static function statuses(): array
     {
         return [
-            self::STATUS_APPROVED => Craft::t('lynn-workflow', 'Approved'),
-            self::STATUS_PENDING => Craft::t('lynn-workflow', 'Pending'),
-            self::STATUS_REJECTED => Craft::t('lynn-workflow', 'Rejected'),
-            self::STATUS_REVOKED => Craft::t('lynn-workflow', 'Revoked')
+            self::STATUS_APPROVED => Craft::t('lynnworkflow', 'Approved'),
+            self::STATUS_PENDING => Craft::t('lynnworkflow', 'Pending'),
+            self::STATUS_REJECTED => Craft::t('lynnworkflow', 'Rejected'),
+            self::STATUS_REVOKED => Craft::t('lynnworkflow', 'Revoked')
         ];
     }
 
@@ -92,7 +92,7 @@ class Submission extends Element
         $sources = [
             '*' => [
                 'key' => '*',
-                'label' => Craft::t('lynn-workflow', 'All submissions'),
+                'label' => Craft::t('lynnworkflow', 'All submissions'),
             ]
         ];
 
@@ -105,8 +105,8 @@ class Submission extends Element
 
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('lynn-workflow', 'Are you sure you want to delete the selected submissions?'),
-            'successMessage' => Craft::t('lynn-workflow', 'Submissions deleted.'),
+            'confirmationMessage' => Craft::t('lynnworkflow', 'Are you sure you want to delete the selected submissions?'),
+            'successMessage' => Craft::t('lynnworkflow', 'Submissions deleted.'),
         ]);
 
         $actions[] = SetStatus::class;
@@ -219,24 +219,24 @@ class Submission extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'id' => ['label' => Craft::t('lynn-workflow', 'Entry')],
-            'editor' => ['label' => Craft::t('lynn-workflow', 'Editor')],
-            'dateCreated' => ['label' => Craft::t('lynn-workflow', 'Date Submitted')],
-            'publisher' => ['label' => Craft::t('lynn-workflow', 'Publisher')],
-            'dateApproved' => ['label' => Craft::t('lynn-workflow', 'Date Approved')],
-            'dateRejected' => ['label' => Craft::t('lynn-workflow', 'Date Rejected')],
+            'id' => ['label' => Craft::t('lynnworkflow', 'Entry')],
+            'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
+            'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
+            'publisher' => ['label' => Craft::t('lynnworkflow', 'Publisher')],
+            'dateApproved' => ['label' => Craft::t('lynnworkflow', 'Date Approved')],
+            'dateRejected' => ['label' => Craft::t('lynnworkflow', 'Date Rejected')],
         ];
     }
 
     protected static function defineSortOptions(): array
     {
         return [
-            'id' => Craft::t('lynn-workflow', 'Entry'),
-            'editor' => Craft::t('lynn-workflow', 'Editor'),
-            'dateCreated' => Craft::t('lynn-workflow', 'Date Submitted'),
-            'publisher' => Craft::t('lynn-workflow', 'Publisher'),
-            'dateApproved' => Craft::t('lynn-workflow', 'Date Approved'),
-            'dateRejected' => Craft::t('lynn-workflow', 'Date Rejected'),
+            'id' => Craft::t('lynnworkflow', 'Entry'),
+            'editor' => Craft::t('lynnworkflow', 'Editor'),
+            'dateCreated' => Craft::t('lynnworkflow', 'Date Submitted'),
+            'publisher' => Craft::t('lynnworkflow', 'Publisher'),
+            'dateApproved' => Craft::t('lynnworkflow', 'Date Approved'),
+            'dateRejected' => Craft::t('lynnworkflow', 'Date Rejected'),
         ];
     }
 

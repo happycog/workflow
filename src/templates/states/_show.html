@@ -18,15 +18,15 @@
 {% set title = workflow.name ~ " - " ~ state ? "State"|t ~ ": " ~ state.name : "New State"|t %}
 
 {% set crumbs = [
-    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
-    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
-    { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) }
+    { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
+    { label: "All Workflows"|t, url: url('lynnworkflow/workflows') },
+    { label: workflow.name, url: url('lynnworkflow/workflows/' ~ workflow.id) }
 ] %}
 {% set transitions = craft.lynnworkflow.getAllTransitions(workflowId, stateId) %}
 
 {% block content %}
 <div class="buttons">
-    <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="btn edit icon">{{ "Edit this state"|t }}</a>
+    <a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="btn edit icon">{{ "Edit this state"|t }}</a>
 </div>
 
     <p id="notransitions"{% if transitions|length %} class="hidden"{% endif %}>
@@ -45,7 +45,7 @@
                 {% for transition in transitions %}
                     <tr data-workflow="{{ workflow.id }}" data-state="{{ state.id }}" data-id="{{ transition.id }}" data-name="{{ transition.name|t }}">
                         <td>{{ transition.name }}</td>
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/'~transition.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/'~transition.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
                         <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
                     </tr>
                 {% endfor %}
@@ -55,7 +55,7 @@
     {% endif %}
 
     <div class="buttons">
-        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/new') }}" class="btn add icon">{{ "New Transition"|t }}</a>
+        <a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/new') }}" class="btn add icon">{{ "New Transition"|t }}</a>
     </div>
 
 {% endblock %}
@@ -64,7 +64,7 @@
     new Craft.AdminTable({
         tableSelector: '#transitions',
         noObjectsSelector: '#notransitions',
-        deleteAction: 'lynn-workflow/transitions/delete-transition'
+        deleteAction: 'lynnworkflow/transitions/delete-transition'
     });
 {% endset %}
 {% includeJs js %}

@@ -36,7 +36,7 @@ class State extends Element
 
     public static function displayName(): string
     {
-        return Craft::t('lynn-workflow', 'Lynn Workflow State');
+        return Craft::t('lynnworkflow', 'Lynn Workflow State');
     }
 
     public static function refHandle()
@@ -74,7 +74,7 @@ class State extends Element
         $sources = [
             '*' => [
                 'key' => '*',
-                'label' => Craft::t('lynn-workflow', 'All states'),
+                'label' => Craft::t('lynnworkflow', 'All states'),
             ]
         ];
 
@@ -87,8 +87,8 @@ class State extends Element
 
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('lynn-workflow', 'Are you sure you want to delete the selected states?'),
-            'successMessage' => Craft::t('lynn-workflow', 'States deleted.'),
+            'confirmationMessage' => Craft::t('lynnworkflow', 'Are you sure you want to delete the selected states?'),
+            'successMessage' => Craft::t('lynnworkflow', 'States deleted.'),
         ]);
 
         $actions[] = SetStatus::class;
@@ -155,25 +155,25 @@ class State extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'id' => ['label' => Craft::t('lynn-workflow', 'State ID')],
-            'name' => ['label' => Craft::t('lynn-workflow', 'Name')],
-            'description' => ['label' => Craft::t('lynn-workflow', 'Description')],
-            'workflowId' => ['label' => Craft::t('lynn-workflow', 'Workflow ID')],
-            'weight' => ['label' => Craft::t('lynn-workflow', 'Weight')],
-            'viewGroups' => ['label' => Craft::t('lynn-workflow', 'View Groups')],
-            'editGroups' => ['label' => Craft::t('lynn-workflow', 'Edit Groups')],
-            'deleteGroups' => ['label' => Craft::t('lynn-workflow', 'Delete Groups')],
-            'dateCreated' => ['label' => Craft::t('lynn-workflow', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('lynn-workflow', 'Date Updated')],
-            'uid' => ['label' => Craft::t('lynn-workflow', 'UID')],
+            'id' => ['label' => Craft::t('lynnworkflow', 'State ID')],
+            'name' => ['label' => Craft::t('lynnworkflow', 'Name')],
+            'description' => ['label' => Craft::t('lynnworkflow', 'Description')],
+            'workflowId' => ['label' => Craft::t('lynnworkflow', 'Workflow ID')],
+            'weight' => ['label' => Craft::t('lynnworkflow', 'Weight')],
+            'viewGroups' => ['label' => Craft::t('lynnworkflow', 'View Groups')],
+            'editGroups' => ['label' => Craft::t('lynnworkflow', 'Edit Groups')],
+            'deleteGroups' => ['label' => Craft::t('lynnworkflow', 'Delete Groups')],
+            'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('lynnworkflow', 'Date Updated')],
+            'uid' => ['label' => Craft::t('lynnworkflow', 'UID')],
         ];
     }
 
     protected static function defineSortOptions(): array
     {
         return [
-            'id' => Craft::t('lynn-workflow', 'ID'),
-            'workflowId' => Craft::t('lynn-workflow', 'Workflow ID'),
+            'id' => Craft::t('lynnworkflow', 'ID'),
+            'workflowId' => Craft::t('lynnworkflow', 'Workflow ID'),
         ];
     }
 

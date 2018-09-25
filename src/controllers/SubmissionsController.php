@@ -36,7 +36,7 @@ class SubmissionsController extends Controller
         $isNew = !$submission->id;
 
         if (!Craft::$app->getElements()->saveElement($submission)) {
-            $session->setError(Craft::t('lynn-workflow', 'Could not submit for approval.'));
+            $session->setError(Craft::t('lynnworkflow', 'Could not submit for approval.'));
             return null;
         }
 
@@ -47,7 +47,7 @@ class SubmissionsController extends Controller
             }
         }
 
-        $session->setNotice(Craft::t('lynn-workflow', 'Entry submitted for approval.'));
+        $session->setNotice(Craft::t('lynnworkflow', 'Entry submitted for approval.'));
 
         // Redirect page to the entry as its not a form submission
         return $this->redirect($request->referrer);
@@ -65,11 +65,11 @@ class SubmissionsController extends Controller
         $submission->dateRevoked = new \DateTime;
 
         if (!Craft::$app->getElements()->saveElement($submission)) {
-            $session->setError(Craft::t('lynn-workflow', 'Could not revoke submission.'));
+            $session->setError(Craft::t('lynnworkflow', 'Could not revoke submission.'));
             return null;
         }
 
-        $session->setNotice(Craft::t('lynn-workflow', 'Submission revoked.'));
+        $session->setNotice(Craft::t('lynnworkflow', 'Submission revoked.'));
 
         // Redirect page to the entry as its not a form submission
         return $this->redirect($request->referrer);
@@ -92,7 +92,7 @@ class SubmissionsController extends Controller
         $draftId = $request->getParam('draftId');
 
         if (!Craft::$app->getElements()->saveElement($submission)) {
-            $session->setError(Craft::t('lynn-workflow', 'Could not approve and publish.'));
+            $session->setError(Craft::t('lynnworkflow', 'Could not approve and publish.'));
             return null;
         }
 
@@ -101,7 +101,7 @@ class SubmissionsController extends Controller
             $draft = Craft::$app->getEntryRevisions()->getDraftById($draftId);
 
             if (!Craft::$app->getEntryRevisions()->publishDraft($draft)) {
-                Craft::$app->getSession()->setError(Craft::t('lynn-workflow', 'Couldn’t publish draft.'));
+                Craft::$app->getSession()->setError(Craft::t('lynnworkflow', 'Couldn’t publish draft.'));
                 return null;
             }
         }
@@ -111,7 +111,7 @@ class SubmissionsController extends Controller
             LynnWorkflow::$plugin->getSubmissions()->sendEditorNotificationEmail($submission);
         }
 
-        $session->setNotice(Craft::t('lynn-workflow', 'Entry approved and published.'));
+        $session->setNotice(Craft::t('lynnworkflow', 'Entry approved and published.'));
 
         // Redirect page to the entry as its not a form submission - check for draft
         if ($draftId) {
@@ -137,7 +137,7 @@ class SubmissionsController extends Controller
         $submission->notes = $request->getParam('notes');
 
         if (!Craft::$app->getElements()->saveElement($submission)) {
-            $session->setError(Craft::t('lynn-workflow', 'Could not reject submission.'));
+            $session->setError(Craft::t('lynnworkflow', 'Could not reject submission.'));
             return null;
         }
 
@@ -163,7 +163,7 @@ class SubmissionsController extends Controller
             $submission = LynnWorkflow::$plugin->getSubmissions()->getSubmissionById($submissionId);
 
             if (!$submission) {
-                throw new \Exception(Craft::t('lynn-workflow', 'No submission with the ID “{id}”', ['id' => $submissionId]));
+                throw new \Exception(Craft::t('lynnworkflow', 'No submission with the ID “{id}”', ['id' => $submissionId]));
             }
         } else {
             $submission = new Submission();

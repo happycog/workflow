@@ -19,7 +19,7 @@ class Submissions extends Widget
 
     public static function displayName(): string
     {
-        return Craft::t('lynn-workflow', 'Lynn Workflow Submissions');
+        return Craft::t('lynnworkflow', 'Lynn Workflow Submissions');
     }
 
     public static function iconPath(): string
@@ -33,14 +33,15 @@ class Submissions extends Widget
             ->limit($this->limit)
             ->all();
 
-        return Craft::$app->getView()->renderTemplate('lynn-workflow/_widget/body', [
+        return Craft::$app->getView()->renderTemplate('lynnworkflow/_components/widgets/body', [
             'submissions' => $submissions,
         ]);
     }
 
     public function getSettingsHtml()
     {
-        return Craft::$app->getView()->renderTemplate('lynn-workflow/_widget/settings', [
+
+        return \Craft::$app->getView()->renderTemplate('lynnworkflow/_components/widgets/settings', [
             'widget' => $this,
         ]);
     }

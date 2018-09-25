@@ -160,7 +160,7 @@
                         <input type="hidden" name="workflowId" value="{{ workflow.id }}">
                         <input type="hidden" name="stateId" value="{{ state.id }}">
 
-                        <a data-action="lynn-workflow/base/execute-transition" data-param="targetState" data-value="{{ transition.id }}-{{ transition.targetState }}"class="btn formsubmit">{{ transition.name | t }}</a>
+                        <a data-action="lynnworkflow/base/execute-transition" data-param="targetState" data-value="{{ transition.id }}-{{ transition.targetState }}"class="btn formsubmit">{{ transition.name | t }}</a>
                     </div>
                   {% endif %}
                   <br /><br />

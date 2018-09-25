@@ -1,8 +1,8 @@
-{% extends "lynn-workflow/_layouts" %}
+{% extends "lynnworkflow/_layouts" %}
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-    { label: "Lynn Workflow" | t, url: url('lynn-workflow') }
+    { label: "Lynn Workflow" | t, url: url('lynnworkflow') }
 ] %}
 
 {% set selectedTab = 'lynnworkflow/workflows' %}
@@ -31,8 +31,8 @@ yo!
 
                 {% for workflow in workflows %}
                     <tr data-id="{{ workflow.id }}" data-name="{{ workflow.name|t }}">
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id) }}">{{ workflow.name }}</a></td>
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id) }}">{{ workflow.name }}</a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
                         <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
                     </tr>
                 {% endfor %}
@@ -42,7 +42,7 @@ yo!
     {% endif %}
 
     <div class="buttons">
-        <a href="{{ url('lynn-workflow/workflows/new') }}" class="btn add icon">{{ "New Workflow"|t }}</a>
+        <a href="{{ url('lynnworkflow/workflows/new') }}" class="btn add icon">{{ "New Workflow"|t }}</a>
     </div>
 
 {% endblock %}

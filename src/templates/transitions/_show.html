@@ -14,8 +14,8 @@
 {% set title = workflow ? workflow.name : "New Workflow"|t %}
 
 {% set crumbs = [
-    { label: "Workflow management"|t, url: url('lynn-workflow') },
-    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+    { label: "Workflow management"|t, url: url('lynnworkflow') },
+    { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
 ] %}
 
 {% set content %}
@@ -38,8 +38,8 @@
 
                 {% for state in states %}
                     <tr data-workflow="{{ workflow.id }}" data-id="{{ state.id }}" data-name="{{ state.name|t }}">
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
                         <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
                     </tr>
                 {% endfor %}
@@ -49,7 +49,7 @@
     {% endif %}
 
     <div class="buttons">
-        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/new') }}" class="btn add icon">{{ "New State"|t }}</a>
+        <a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/new') }}" class="btn add icon">{{ "New State"|t }}</a>
     </div>
 
 {% endblock %}

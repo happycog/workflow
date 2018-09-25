@@ -24,7 +24,7 @@ class StatesController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/states/index', array());
+        $this->renderTemplate('lynnworkflow/states/index', array());
       }
       else {
         throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
@@ -35,7 +35,7 @@ class StatesController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/states/_edit', array(
+        $this->renderTemplate('lynnworkflow/states/_edit', array(
           'workflowId' => $workflowId,
           'stateId' => $stateId,
         ));
@@ -49,7 +49,7 @@ class StatesController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/states/_show', array(
+        $this->renderTemplate('lynnworkflow/states/_show', array(
           'workflowId' => $workflowId,
           'stateId' => $stateId,
         ));
@@ -85,11 +85,11 @@ class StatesController extends Controller
           $model->$attribute = $att_value;
         }
         if (Craft::$app->getElements()->saveElement($model)) {
-          $session->setNotice(Craft::t('lynn-workflow', 'State saved.'));
-          $url = UrlHelper::cpUrl('lynn-workflow/workflows/' . $model->workflowId . '/states/' . $model->id);
+          $session->setNotice(Craft::t('lynnworkflow', 'State saved.'));
+          $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $model->workflowId . '/states/' . $model->id);
           return $this->redirect($url);
         } else {
-          $session->setError(Craft::t('lynn-workflow', 'Could not save State.'));
+          $session->setError(Craft::t('lynnworkflow', 'Could not save State.'));
           return null;
         }
       }
@@ -134,7 +134,7 @@ class StatesController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('app', 'State deleted.'));
-        $url = UrlHelper::cpUrl('lynn-workflow/workflows/' . $workflowId);
+        $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $workflowId);
         return $this->redirect($url);
       }
     }

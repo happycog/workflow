@@ -44,9 +44,10 @@
 
 
 {% set content %}
+
     <form method="post" action="" accept-charset="UTF-8">
         <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
-        <input type="hidden" name="action" value="lynnworkflow/states/save-state" />
+        <input type="hidden" name="action" value="lynnWorkflow/states/saveState" />
         <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="state[workflowId]" value="{{ state ? state.workflowId : workflowId }}" />
         <input type="hidden" name="stateId" value="{{ stateId }}" />

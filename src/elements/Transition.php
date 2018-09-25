@@ -39,7 +39,7 @@ class Transition extends Element
 
     public static function displayName(): string
     {
-        return Craft::t('lynn-workflow', 'Lynn Workflow Transition');
+        return Craft::t('lynnworkflow', 'Lynn Workflow Transition');
     }
 
     public static function refHandle()
@@ -77,7 +77,7 @@ class Transition extends Element
         $sources = [
             '*' => [
                 'key' => '*',
-                'label' => Craft::t('lynn-workflow', 'All transitions'),
+                'label' => Craft::t('lynnworkflow', 'All transitions'),
             ]
         ];
 
@@ -90,8 +90,8 @@ class Transition extends Element
 
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('lynn-workflow', 'Are you sure you want to delete the selected transition?'),
-            'successMessage' => Craft::t('lynn-workflow', 'Transitions deleted.'),
+            'confirmationMessage' => Craft::t('lynnworkflow', 'Are you sure you want to delete the selected transition?'),
+            'successMessage' => Craft::t('lynnworkflow', 'Transitions deleted.'),
         ]);
 
         $actions[] = SetStatus::class;
@@ -158,28 +158,28 @@ class Transition extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'id' => ['label' => Craft::t('lynn-workflow', 'State ID')],
-            'name' => ['label' => Craft::t('lynn-workflow', 'Name')],
-            'description' => ['label' => Craft::t('lynn-workflow', 'Description')],
-            'workflowId' => ['label' => Craft::t('lynn-workflow', 'Workflow ID')],
-            'stateId' => ['label' => Craft::t('lynn-workflow', 'State ID')],
-            'groups' => ['label' => Craft::t('lynn-workflow', 'Groups')],
-            'notifyAuthor' => ['label' => Craft::t('lynn-workflow', 'Notify Author')],
-            'notificationRecipients' => ['label' => Craft::t('lynn-workflow', 'Notification Recipients')],
-            'notificationText' => ['label' => Craft::t('lynn-workflow', 'Notification Text')],
-            'targetState' => ['label' => Craft::t('lynn-workflow', 'Target State')],
-            'dateCreated' => ['label' => Craft::t('lynn-workflow', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('lynn-workflow', 'Date Updated')],
-            'uid' => ['label' => Craft::t('lynn-workflow', 'UID')],
+            'id' => ['label' => Craft::t('lynnworkflow', 'State ID')],
+            'name' => ['label' => Craft::t('lynnworkflow', 'Name')],
+            'description' => ['label' => Craft::t('lynnworkflow', 'Description')],
+            'workflowId' => ['label' => Craft::t('lynnworkflow', 'Workflow ID')],
+            'stateId' => ['label' => Craft::t('lynnworkflow', 'State ID')],
+            'groups' => ['label' => Craft::t('lynnworkflow', 'Groups')],
+            'notifyAuthor' => ['label' => Craft::t('lynnworkflow', 'Notify Author')],
+            'notificationRecipients' => ['label' => Craft::t('lynnworkflow', 'Notification Recipients')],
+            'notificationText' => ['label' => Craft::t('lynnworkflow', 'Notification Text')],
+            'targetState' => ['label' => Craft::t('lynnworkflow', 'Target State')],
+            'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('lynnworkflow', 'Date Updated')],
+            'uid' => ['label' => Craft::t('lynnworkflow', 'UID')],
         ];
     }
 
     protected static function defineSortOptions(): array
     {
         return [
-            'id' => Craft::t('lynn-workflow', 'ID'),
-            'workflowId' => Craft::t('lynn-workflow', 'Workflow ID'),
-            'stateId' => Craft::t('lynn-workflow', 'State ID'),
+            'id' => Craft::t('lynnworkflow', 'ID'),
+            'workflowId' => Craft::t('lynnworkflow', 'Workflow ID'),
+            'stateId' => Craft::t('lynnworkflow', 'State ID'),
         ];
     }
 

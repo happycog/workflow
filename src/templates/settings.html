@@ -1,9 +1,9 @@
-{% extends 'lynn-workflow/_layouts' %}
+{% extends 'lynnworkflow/_layouts' %}
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-    { label: 'Lynn Workflow' | t('lynn-workflow'), url: url('lynn-workflow') },
-    { label: 'Settings' | t('lynn-workflow'), url: url('lynn-workflow/settings') },
+    { label: 'Lynn Workflow' | t('lynnworkflow'), url: url('lynnworkflow') },
+    { label: 'Settings' | t('lynnworkflow'), url: url('lynnworkflow/settings') },
 ] %}
 
 {% set selectedTab = 'settings' %}
@@ -13,7 +13,7 @@
 {% block blockContent %}
 
 <input type="hidden" name="action" value="plugins/save-plugin-settings">
-<input type="hidden" name="pluginHandle" value="lynn-workflow">
+<input type="hidden" name="pluginHandle" value="lynnworkflow">
 
 {% namespace 'settings' %}
 
