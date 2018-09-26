@@ -31,7 +31,7 @@
 
 {% set content %}
     <form method="post" action="" accept-charset="UTF-8">
-        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="{{ craft.app.config.general.csrfTokenName }}" value="{{ craft.app.request.csrfToken }}">
         <input type="hidden" name="action" value="lynnworkflow/workflows/save-workflow" />
         <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="workflowId" value="{{ workflowId }}" />
@@ -55,7 +55,7 @@
         }}
 
         {% set userlist = [{ label: "None" | t, value: '' }] %}
-        {% for user in craft.users %}
+        {% for user in craft.users.all() %}
           {% set userlist = userlist | merge([{ label: user.name, value: user.id }]) %}
         {% endfor %}
 
@@ -70,7 +70,7 @@
         }}
 
         {% set grouplist = [{ label: "None" | t, value: '' }] %}
-        {% for group in craft.userGroups.getAllGroups() %}
+        {% for group in craft.app.userGroups.allGroups  %}
             {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}
         {% endfor %}
 

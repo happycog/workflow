@@ -36,12 +36,12 @@
 
     {% if states|length %}
     <form method="post" action="" accept-charset="UTF-8">
-        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="{{ craft.app.config.general.csrfTokenName }}" value="{{ craft.app.request.csrfToken }}">
         <input type="hidden" name="action" value="lynnworkflow/workflows/save-workflow" />
         <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="workflowId" value="{{ workflowId }}" />
         {% set stateOptions = [{ value: null, label: 'None' | t}] %}
-        {% for state in states %}
+        {% for state in states.all() %}
           {% set stateOptions = [{ value: state.id, label: state.name }] | merge(stateOptions) %}
         {% endfor %}
         {{ forms.selectField({
@@ -67,7 +67,7 @@
             </thead>
             <tbody>
 
-                {% for state in states %}
+                {% for state in states.all() %}
                     <tr data-workflow="{{ workflow.id }}" data-id="{{ state.id }}" data-name="{{ state.name|t }}">
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
@@ -92,7 +92,7 @@
         deleteAction: 'lynnworkflow/states/delete-state'
     });
 {% endset %}
-{% includeJs js %}
+{% js js %}
 
 
 {% endset %}

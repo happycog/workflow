@@ -18,12 +18,12 @@
 {% namespace 'settings' %}
 
 {% set workflows = [{ value: FALSE, label: 'None' | t}] %}
-{% for workflow in craft.lynnworkflow.getAllWorkflows() %}
+{% for workflow in craft.lynnworkflow.getAllWorkflows().all() %}
   {% set workflows = [{ value: workflow.id, label: workflow.name }] | merge(workflows) %}
 {% endfor %}
 
 {% set entries = [] %}
-{% for section in craft.sections.getAllSections() %}
+{% for section in craft.app.sections.allSections %}
   <h2>Section: {{ section.name }}</h2>
   <p>Select the workflow that should apply to this section.</p>
   {{ forms.selectField({

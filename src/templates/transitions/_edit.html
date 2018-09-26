@@ -46,7 +46,7 @@
 {% set content %}
 
     <form method="post" action="" accept-charset="UTF-8">
-        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="{{ craft.app.config.general.csrfTokenName }}" value="{{ craft.app.request.csrfToken }}">
         <input type="hidden" name="action" value="lynnworkflow/transitions/save-transition" />
         <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}/states/{stateId}" />
         <input type="hidden" name="transition[workflowId]" value="{{ transition ? transition.workflowId : workflowId }}" />
@@ -75,7 +75,7 @@
 
         {% set grouplist = [] %}
         {% set recipientGrouplist = [{ label: "None" | t, value: "none" }] %}
-        {% for group in craft.userGroups.getAllGroups() %}
+        {% for group in craft.app.userGroups.allGroups  %}
             {% if group.id in workflow.groups|values %}
               {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}
               {% set recipientGrouplist = recipientGrouplist | merge([{ label: group.name, value: group.id }]) %}
@@ -83,7 +83,7 @@
         {% endfor %}
 
         {% set stateList = [] %}
-        {% for stateListItem in craft.lynnworkflow.getAllStates(workflowId) %}
+        {% for stateListItem in craft.lynnworkflow.getAllStates(workflowId).all() %}
           {% set stateList = stateList | merge([{ label: stateListItem.name, value: stateListItem.id }]) %}
         {% endfor %}
 

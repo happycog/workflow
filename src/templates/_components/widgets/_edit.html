@@ -46,14 +46,14 @@
 {% set content %}
 
     <form method="post" action="" accept-charset="UTF-8">
-        <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
+        <input type="hidden" name="{{ craft.app.config.general.csrfTokenName }}" value="{{ craft.app.request.csrfToken }}">
         <input type="hidden" name="action" value="lynnWorkflow/states/saveState" />
         <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="state[workflowId]" value="{{ state ? state.workflowId : workflowId }}" />
         <input type="hidden" name="stateId" value="{{ stateId }}" />
 
         {% set grouplist = [] %}
-        {% for group in craft.userGroups.getAllGroups() %}
+        {% for group in craft.app.userGroups.allGroups  %}
             {% if workflow.groups == '*' %}
               {# List all groups #}
               {% set grouplist = grouplist | merge([{ label: group.name, value: group.id }]) %}

@@ -67,14 +67,14 @@
         {% set allowView = false %}
         {% if state.viewGroups == '*' %}
           {% for group in workflow.groups %}
-            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(group) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowView = true %}
             {% endif %}
           {% endfor %}
         {% else %}
           {% for viewGroup in state.viewGroups %}
-            {% set groupObject = craft.userGroups.getGroupById(viewGroup) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(viewGroup) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowView = true %}
             {% endif %}
@@ -88,14 +88,14 @@
         {% set allowSave = false %}
         {% if state.editGroups == '*' %}
           {% for group in workflow.groups %}
-            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(group) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowSave = true %}
             {% endif %}
           {% endfor %}
         {% else %}
           {% for editGroup in state.editGroups %}
-            {% set groupObject = craft.userGroups.getGroupById(editGroup) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(editGroup) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowSave = true %}
             {% endif %}
@@ -106,14 +106,14 @@
         {% set allowDelete = false %}
         {% if state.deleteGroups == '*' %}
           {% for group in workflow.groups %}
-            {% set groupObject = craft.userGroups.getGroupById(group) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(group) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowDelete = true %}
             {% endif %}
           {% endfor %}
         {% else %}
           {% for deleteGroup in state.deleteGroups %}
-            {% set groupObject = craft.userGroups.getGroupById(deleteGroup) %}
+            {% set groupObject = craft.app.userGroups.getGroupById(deleteGroup) %}
             {% if (currentUser.isInGroup(groupObject)) %}
               {% set allowDelete = true %}
             {% endif %}
@@ -125,7 +125,7 @@
                   <label>{{ state.name | t }}</label>
               </div>
               {% set transitionsAvailable = false %}
-              {% for transition in transitions %}
+              {% for transition in transitions.all() %}
                 {% if bypass == false %}
                   {% set isAllowed = false %}
                 {% else %}
@@ -133,14 +133,14 @@
                 {% endif %}
                 {% if transition.groups == '*' %}
                   {% for group in workflow.groups %}
-                    {% set groupObject = craft.userGroups.getGroupById(group) %}
+                    {% set groupObject = craft.app.userGroups.getGroupById(group) %}
                     {% if (currentUser.isInGroup(groupObject)) %}
                       {% set isAllowed = true %}
                     {% endif %}
                   {% endfor %}
                 {% else %}
                   {% for group in transition.groups %}
-                    {% set groupObject = craft.userGroups.getGroupById(group) %}
+                    {% set groupObject = craft.app.userGroups.getGroupById(group) %}
                     {% if (currentUser.isInGroup(groupObject)) %}
                       {% set isAllowed = true %}
                     {% endif %}
@@ -208,7 +208,7 @@
   {% set css %}
     #extra-headers .btngroup { display: none; }
   {% endset %}
-  {% includeCss css first %}
+  {% css css first %}
   {% endif %}
 
   {% if allowSave == false %}
@@ -228,5 +228,5 @@
     {% endset %}
   {% endif %}
 
-  {% includeJs js first %}
+  {% js js first %}
 {% endif %}

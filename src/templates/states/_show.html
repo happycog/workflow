@@ -42,7 +42,7 @@
             </thead>
             <tbody>
 
-                {% for transition in transitions %}
+                {% for transition in transitions.all() %}
                     <tr data-workflow="{{ workflow.id }}" data-state="{{ state.id }}" data-id="{{ transition.id }}" data-name="{{ transition.name|t }}">
                         <td>{{ transition.name }}</td>
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/transitions/'~transition.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
@@ -67,7 +67,7 @@
         deleteAction: 'lynnworkflow/transitions/delete-transition'
     });
 {% endset %}
-{% includeJs js %}
+{% js js %}
 
 
 {% endset %}

@@ -27,7 +27,7 @@
             </thead>
             <tbody>
 
-                {% for workflow in workflows %}
+                {% for workflow in workflows.all() %}
                     <tr data-id="{{ workflow.id }}" data-name="{{ workflow.name|t }}">
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id) }}">{{ workflow.name }}</a></td>
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
@@ -52,4 +52,4 @@
         deleteAction: 'lynnworkflow/workflows/delete-workflow'
     });
 {% endset %}
-{% includeJs js %}
+{% js js %}
