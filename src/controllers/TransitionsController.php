@@ -24,7 +24,7 @@ class TransitionsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/transitions/index', array());
+        $this->renderTemplate('lynnworkflow/transitions/index', array());
       }
       else {
         throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
@@ -35,7 +35,7 @@ class TransitionsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/transitions/_edit', array(
+        $this->renderTemplate('lynnworkflow/transitions/_edit', array(
           'workflowId' => $workflowId,
           'stateId' => $stateId,
           'transitionId' => $transitionId,
@@ -50,7 +50,7 @@ class TransitionsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/transitions/_show', array(
+        $this->renderTemplate('lynnworkflow/transitions/_show', array(
           'workflowId' => $workflowId,
           'stateId' => $stateId,
           'transitionId' => $transitionId,
@@ -88,11 +88,11 @@ class TransitionsController extends Controller
           $model->$attribute = $att_value;
         }
         if (Craft::$app->getElements()->saveElement($model)) {
-          $session->setNotice(Craft::t('lynn-workflow', 'Transition saved.'));
-          $url = UrlHelper::cpUrl('lynn-workflow/workflows/' . $model->workflowId . '/states/' . $model->stateId);
+          $session->setNotice(Craft::t('lynnworkflow', 'Transition saved.'));
+          $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $model->workflowId . '/states/' . $model->stateId);
           return $this->redirect($url);
         } else {
-          $session->setError(Craft::t('lynn-workflow', 'Could not save Transition.'));
+          $session->setError(Craft::t('lynnworkflow', 'Could not save Transition.'));
           return null;
         }
       }
@@ -138,7 +138,7 @@ class TransitionsController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('app', 'Transition deleted.'));
-        $url = UrlHelper::cpUrl('lynn-workflow/workflows/' . $workflowId . '/states/' . $stateId);
+        $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $workflowId . '/states/' . $stateId);
         return $this->redirect($url);
       }
     }

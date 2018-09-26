@@ -18,15 +18,15 @@
 {% set title = workflow ? workflow.name : "New Workflow"|t %}
 
 {% set crumbs = [
-    { label: "Workflow management"|t, url: url('lynn-workflow') },
-    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+    { label: "Workflow management"|t, url: url('lynnworkflow') },
+    { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
 ] %}
 
 {% set states = craft.lynnworkflow.getAllStates(workflowId) %}
 
 {% block content %}
     <div class="buttons">
-        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/edit') }}" class="btn edit icon">{{ "Edit this workflow"|t }}</a>
+        <a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/edit') }}" class="btn edit icon">{{ "Edit this workflow"|t }}</a>
     </div>
 
 
@@ -37,8 +37,8 @@
     {% if states|length %}
     <form method="post" action="" accept-charset="UTF-8">
         <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
-        <input type="hidden" name="action" value="lynn-workflow/workflows/save-workflow" />
-        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}" />
+        <input type="hidden" name="action" value="lynnworkflow/workflows/save-workflow" />
+        <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="workflowId" value="{{ workflowId }}" />
         {% set stateOptions = [{ value: null, label: 'None' | t}] %}
         {% for state in states %}
@@ -69,8 +69,8 @@
 
                 {% for state in states %}
                     <tr data-workflow="{{ workflow.id }}" data-id="{{ state.id }}" data-name="{{ state.name|t }}">
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
-                        <td><a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id) }}">{{ state.name }}</a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/'~state.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
                         <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
                     </tr>
                 {% endfor %}
@@ -80,7 +80,7 @@
     {% endif %}
 
     <div class="buttons">
-        <a href="{{ url('lynn-workflow/workflows/'~workflow.id~'/states/new') }}" class="btn add icon">{{ "New State"|t }}</a>
+        <a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/states/new') }}" class="btn add icon">{{ "New State"|t }}</a>
     </div>
 
 {% endblock %}
@@ -89,7 +89,7 @@
     new Craft.AdminTable({
         tableSelector: '#states',
         noObjectsSelector: '#nostates',
-        deleteAction: 'lynn-workflow/states/delete-state'
+        deleteAction: 'lynnworkflow/states/delete-state'
     });
 {% endset %}
 {% includeJs js %}

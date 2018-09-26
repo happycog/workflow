@@ -25,10 +25,10 @@
 {% endif %}
 
 {% set crumbs = [
-    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
-    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
-    { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) },
-    { label: "State"|t ~ ": " ~ state.name, url: url('lynn-workflow/workflows/' ~ workflow.id ~ '/states/' ~ state.id) }
+    { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
+    { label: "All Workflows"|t, url: url('lynnworkflow/workflows') },
+    { label: workflow.name, url: url('lynnworkflow/workflows/' ~ workflow.id) },
+    { label: "State"|t ~ ": " ~ state.name, url: url('lynnworkflow/workflows/' ~ workflow.id ~ '/states/' ~ state.id) }
 ] %}
 
 {% if transitionId is not defined %}{% set transitionId = null %}{% endif %}
@@ -47,8 +47,8 @@
 
     <form method="post" action="" accept-charset="UTF-8">
         <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
-        <input type="hidden" name="action" value="lynn-workflow/transitions/save-transition" />
-        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}/states/{stateId}" />
+        <input type="hidden" name="action" value="lynnworkflow/transitions/save-transition" />
+        <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}/states/{stateId}" />
         <input type="hidden" name="transition[workflowId]" value="{{ transition ? transition.workflowId : workflowId }}" />
         <input type="hidden" name="transition[stateId]" value="{{ transition ? transition.stateId : stateId }}" />
         <input type="hidden" name="transitionId" value="{{ transitionId }}" />

@@ -3,8 +3,8 @@
 {% set centered = true %}
 
 {% set crumbs = [
-    { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
-    { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+    { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
+    { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
 ] %}
 
 {% if workflowId is not defined %}{% set workflowId = null %}{% endif %}
@@ -12,16 +12,16 @@
     {% if workflowId %}
         {% set workflow = craft.lynnworkflow.getWorkflowById(workflowId) %}
         {% set crumbs = [
-            { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
-            { label: "All Workflows"|t, url: url('lynn-workflow/workflows') },
-            { label: workflow.name, url: url('lynn-workflow/workflows/' ~ workflow.id) }
+            { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
+            { label: "All Workflows"|t, url: url('lynnworkflow/workflows') },
+            { label: workflow.name, url: url('lynnworkflow/workflows/' ~ workflow.id) }
         ] %}
         {% if not workflow %}{% exit 404 %}{% endif %}
     {% else %}
         {% set workflow = null %}
         {% set crumbs = [
-            { label: "Lynn Workflow"|t, url: url('lynn-workflow') },
-            { label: "All Workflows"|t, url: url('lynn-workflow/workflows') }
+            { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
+            { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
         ] %}
     {% endif %}
 {% endif %}
@@ -32,8 +32,8 @@
 {% set content %}
     <form method="post" action="" accept-charset="UTF-8">
         <input type="hidden" name="{{ craft.config.csrfTokenName }}" value="{{ craft.request.csrfToken }}">
-        <input type="hidden" name="action" value="lynn-workflow/workflows/save-workflow" />
-        <input type="hidden" name="redirect" value="lynn-workflow/workflows/{workflowId}" />
+        <input type="hidden" name="action" value="lynnworkflow/workflows/save-workflow" />
+        <input type="hidden" name="redirect" value="lynnworkflow/workflows/{workflowId}" />
         <input type="hidden" name="workflowId" value="{{ workflowId }}" />
 
         {{

@@ -101,7 +101,7 @@ class Service extends Component
       $permission_suffix = ':'.$context['entry']->sectionId;
       $baseCpEditUrl = 'entries/'.$context['section']->handle.'/{id}-{slug}';
 
-      return Craft::$app->view->renderTemplate('lynn-workflow/_includes/workflow-pane', array(
+      return Craft::$app->view->renderTemplate('lynnworkflow/_includes/workflow-pane', array(
           'baseCpEditUrl' => $baseCpEditUrl,
           'permissionSuffix' => $permission_suffix,
           'entry' => $context['entry'],

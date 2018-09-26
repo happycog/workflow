@@ -33,7 +33,7 @@ class Workflow extends Element
 
     public static function displayName(): string
     {
-        return Craft::t('lynn-workflow', 'Lynn Workflow Workflow');
+        return Craft::t('lynnworkflow', 'Lynn Workflow Workflow');
     }
 
     public static function refHandle()
@@ -71,7 +71,7 @@ class Workflow extends Element
         $sources = [
             '*' => [
                 'key' => '*',
-                'label' => Craft::t('lynn-workflow', 'All workflows'),
+                'label' => Craft::t('lynnworkflow', 'All workflows'),
             ]
         ];
 
@@ -84,8 +84,8 @@ class Workflow extends Element
 
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('lynn-workflow', 'Are you sure you want to delete the selected workflows?'),
-            'successMessage' => Craft::t('lynn-workflow', 'Workflows deleted.'),
+            'confirmationMessage' => Craft::t('lynnworkflow', 'Are you sure you want to delete the selected workflows?'),
+            'successMessage' => Craft::t('lynnworkflow', 'Workflows deleted.'),
         ]);
 
         $actions[] = SetStatus::class;
@@ -148,22 +148,22 @@ class Workflow extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'id' => ['label' => Craft::t('lynn-workflow', 'Workflow ID')],
-            'name' => ['label' => Craft::t('lynn-workflow', 'Name')],
-            'description' => ['label' => Craft::t('lynn-workflow', 'Description')],
-            'bypass' => ['label' => Craft::t('lynn-workflow', 'Access Bypass')],
-            'groups' => ['label' => Craft::t('lynn-workflow', 'Groups')],
-            'defaultState' => ['label' => Craft::t('lynn-workflow', 'Default State')],
-            'dateCreated' => ['label' => Craft::t('lynn-workflow', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('lynn-workflow', 'Date Updated')],
-            'uid' => ['label' => Craft::t('lynn-workflow', 'UID')],
+            'id' => ['label' => Craft::t('lynnworkflow', 'Workflow ID')],
+            'name' => ['label' => Craft::t('lynnworkflow', 'Name')],
+            'description' => ['label' => Craft::t('lynnworkflow', 'Description')],
+            'bypass' => ['label' => Craft::t('lynnworkflow', 'Access Bypass')],
+            'groups' => ['label' => Craft::t('lynnworkflow', 'Groups')],
+            'defaultState' => ['label' => Craft::t('lynnworkflow', 'Default State')],
+            'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('lynnworkflow', 'Date Updated')],
+            'uid' => ['label' => Craft::t('lynnworkflow', 'UID')],
         ];
     }
 
     protected static function defineSortOptions(): array
     {
         return [
-            'id' => Craft::t('lynn-workflow', 'Entry'),
+            'id' => Craft::t('lynnworkflow', 'Entry'),
         ];
     }
 

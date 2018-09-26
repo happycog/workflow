@@ -20,7 +20,7 @@ class BaseController extends Controller
     {
         $drafts = LynnWorkflow::$plugin->getDrafts()->getAllDrafts();
 
-        return $this->renderTemplate('lynn-workflow/drafts', [
+        return $this->renderTemplate('lynnworkflow/drafts', [
             'entries' => $drafts,
         ]);
     }
@@ -30,7 +30,7 @@ class BaseController extends Controller
         $settings = LynnWorkflow::$plugin->getSettings();
         $workflows = LynnWorkflow::$plugin->getWorkflows()->getAllWorkflows();
 
-        return $this->renderTemplate('lynn-workflow/settings', [
+        return $this->renderTemplate('lynnworkflow/settings', [
             'settings' => $settings,
             'workflowList' => $workflows,
         ]);
@@ -43,7 +43,18 @@ class BaseController extends Controller
         $user = Craft::$app->getUser()->getIdentity();
         $submission_id = Craft::$app->request->getParam('submissionId');
         $fields = Craft::$app->request->getParam('fields');
-        $headline = $fields['articleHeadline'];
+        $title = Craft::$app->request->getParam('title');
+        if (!empty($fields['articleHeadline'])) {
+          $headline = $fields['articleHeadline'];
+        }
+        else {
+          if (!empty($title)) {
+            $headline = $title;
+          }
+          else {
+            $headline = 'Submission';
+          }
+        }
         $entry_id = Craft::$app->request->getParam('entryId');
         $draft_id = Craft::$app->request->getParam('draftId');
         $state_info = Craft::$app->request->getParam('targetState');
@@ -103,9 +114,9 @@ class BaseController extends Controller
               'notes' => $notes,
             );
             $this->sendNotification($email_config);
-            $session->setNotice(Craft::t('lynn-workflow', 'Entry transitioned successfully.'));
+            $session->setNotice(Craft::t('lynnworkflow', 'Entry transitioned successfully.'));
         } else {
-            $session->setNotice(Craft::t('lynn-workflow', 'An error occured during the transition.'));
+            $session->setNotice(Craft::t('lynnworkflow', 'An error occured during the transition.'));
         }
 
         // Redirect page to the entry as its not a form submission - check for draft

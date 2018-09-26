@@ -121,19 +121,19 @@ class LynnWorkflow extends Plugin
     public function registerCpUrlRules(RegisterUrlRulesEvent $event)
     {
         $rules = [
-          'lynn-workflow/drafts' => 'lynn-workflow/base/drafts',
-          'lynn-workflow/settings' => 'lynn-workflow/base/settings',
-          'lynn-workflow/workbench' => 'lynn-workflow/base/workbench',
-          'lynn-workflow/workflows' => 'lynn-workflow/workflows/list',
-          'lynn-workflow/workflows/new' => 'lynn-workflow/workflows/edit',
-          'lynn-workflow/workflows/<workflowId:\d+>' => 'lynn-workflow/workflows/show',
-          'lynn-workflow/workflows/<workflowId:\d+>/edit' => 'lynn-workflow/workflows/edit',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/new' => 'lynn-workflow/states/edit',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/<stateId:\d+>' => 'lynn-workflow/states/show',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/edit' => 'lynn-workflow/states/edit',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/new' => 'lynn-workflow/transitions/edit',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>' => 'lynn-workflow/transitions/show',
-          'lynn-workflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>/edit' => 'lynn-workflow/transitions/edit'
+          'lynnworkflow/drafts' => 'lynnworkflow/base/drafts',
+          'lynnworkflow/settings' => 'lynnworkflow/base/settings',
+          'lynnworkflow/workbench' => 'lynnworkflow/base/workbench',
+          'lynnworkflow/workflows' => 'lynnworkflow/workflows/list',
+          'lynnworkflow/workflows/new' => 'lynnworkflow/workflows/edit',
+          'lynnworkflow/workflows/<workflowId:\d+>' => 'lynnworkflow/workflows/show',
+          'lynnworkflow/workflows/<workflowId:\d+>/edit' => 'lynnworkflow/workflows/edit',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/new' => 'lynnworkflow/states/edit',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>' => 'lynnworkflow/states/show',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/edit' => 'lynnworkflow/states/edit',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/new' => 'lynnworkflow/transitions/edit',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>' => 'lynnworkflow/transitions/show',
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>/edit' => 'lynnworkflow/transitions/edit'
         ];
 
         $event->rules = array_merge($event->rules, $rules);
@@ -156,7 +156,7 @@ class LynnWorkflow extends Plugin
 
     protected function settingsHtml()
     {
-        return \Craft::$app->getView()->renderTemplate('lynn-workflow/settings', [
+        return \Craft::$app->getView()->renderTemplate('lynnworkflow/settings', [
             'settings' => $this->getSettings()
         ]);
     }

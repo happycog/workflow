@@ -24,7 +24,7 @@ class WorkflowsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/workflows/index', array());
+        $this->renderTemplate('lynnworkflow/workflows/index', array());
       }
       else {
         throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
@@ -35,7 +35,7 @@ class WorkflowsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/workflows/_edit', array(
+        $this->renderTemplate('lynnworkflow/workflows/_edit', array(
           'workflowId' => $workflowId,
         ));
       }
@@ -48,7 +48,7 @@ class WorkflowsController extends Controller
     {
       $user = Craft::$app->getUser()->getIdentity();
       if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynn-workflow/workflows/_show', array(
+        $this->renderTemplate('lynnworkflow/workflows/_show', array(
           'workflowId' => $workflowId,
         ));
       }
@@ -82,7 +82,7 @@ class WorkflowsController extends Controller
           $workflow->$attribute = $att_value;
         }
         if (!Craft::$app->getElements()->saveElement($workflow)) {
-          $session->setError(Craft::t('lynn-workflow', 'Could not submit for approval.'));
+          $session->setError(Craft::t('lynnworkflow', 'Could not submit for approval.'));
           return null;
         }
 
@@ -101,13 +101,13 @@ class WorkflowsController extends Controller
 
 
           if (Craft::$app->getElements()->saveElement($draft_state)) {
-              $session->setNotice(Craft::t('lynn-workflow', 'Default draft saved.'));
+              $session->setNotice(Craft::t('lynnworkflow', 'Default draft saved.'));
               // Now set this as the default state on the workflow.
               $draft_state_id = $draft_state->id;
               $workflow->defaultState = $draft_state_id;
               $save_default = Craft::$app->getElements()->saveElement($workflow);
           } else {
-            $session->setNotice(Craft::t('lynn-workflow', 'Couldn\'t save the default draft state.'));
+            $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default draft state.'));
           }
 
           $published_state = new State();
@@ -120,14 +120,14 @@ class WorkflowsController extends Controller
           $published_state->deleteGroups = $workflow->groups;
 
           if (Craft::$app->getElements()->saveElement($published_state)) {
-            $session->setNotice(Craft::t('lynn-workflow', 'Default published state saved.'));
+            $session->setNotice(Craft::t('lynnworkflow', 'Default published state saved.'));
           } else {
-            $session->setNotice(Craft::t('lynn-workflow', 'Couldn\'t save the default published state.'));
+            $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default published state.'));
           }
         }
 
-        $session->setNotice(Craft::t('lynn-workflow', 'Workflow saved.'));
-        $url = UrlHelper::cpUrl('lynn-workflow/workflows/' . $workflow->id);
+        $session->setNotice(Craft::t('lynnworkflow', 'Workflow saved.'));
+        $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $workflow->id);
         return $this->redirect($url);
       }
       else {
@@ -176,7 +176,7 @@ class WorkflowsController extends Controller
 
       Craft::$app->getSession()->setNotice(Craft::t('app', 'Workflow deleted.'));
 
-      $url = UrlHelper::cpUrl('lynn-workflow/workflows');
+      $url = UrlHelper::cpUrl('lynnworkflow/workflows');
       return $this->redirect($url);
     }
 
@@ -192,7 +192,7 @@ class WorkflowsController extends Controller
             $workflow = LynnWorkflow::$plugin->getWorkflows()->getWorkflowById($workflowId);
 
             if (!$workflow) {
-                throw new \Exception(Craft::t('lynn-workflow', 'No submission with the ID “{id}”', ['id' => $workflowId]));
+                throw new \Exception(Craft::t('lynnworkflow', 'No submission with the ID “{id}”', ['id' => $workflowId]));
             }
         } else {
             $workflow = new Workflow();
