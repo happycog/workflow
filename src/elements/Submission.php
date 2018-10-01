@@ -4,6 +4,8 @@ namespace therefinery\lynnworkflow\elements;
 use therefinery\lynnworkflow\elements\actions\SetStatus;
 use therefinery\lynnworkflow\elements\db\SubmissionQuery;
 use therefinery\lynnworkflow\records\Submission as SubmissionRecord;
+use therefinery\lynnworkflow\elements\State;
+
 
 use Craft;
 use craft\base\Element;
@@ -219,38 +221,40 @@ class Submission extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'id' => ['label' => Craft::t('lynnworkflow', 'Entry')],
+            'id' => ['label' => Craft::t('lynnworkflow', 'ID')],
+            'draftTitle' => ['label' => Craft::t('lynnworkflow', 'Draft Title')],
             'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
             'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
-            'publisher' => ['label' => Craft::t('lynnworkflow', 'Publisher')],
-            'dateApproved' => ['label' => Craft::t('lynnworkflow', 'Date Approved')],
-            'dateRejected' => ['label' => Craft::t('lynnworkflow', 'Date Rejected')],
+            'stateId' => ['label' => Craft::t('lynnworkflow', 'Current State')],
         ];
     }
 
     protected static function defineSortOptions(): array
     {
         return [
-            'id' => Craft::t('lynnworkflow', 'Entry'),
-            'editor' => Craft::t('lynnworkflow', 'Editor'),
             'dateCreated' => Craft::t('lynnworkflow', 'Date Submitted'),
-            'publisher' => Craft::t('lynnworkflow', 'Publisher'),
-            'dateApproved' => Craft::t('lynnworkflow', 'Date Approved'),
-            'dateRejected' => Craft::t('lynnworkflow', 'Date Rejected'),
+            'stateId' => Craft::t('lynnworkflow', 'Current State'),
         ];
     }
 
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
-            case 'publisher':
-                $publisher = $this->getPublisher();
-
-                if ($publisher) {
-                    return "<a href='" . $publisher->cpEditUrl . "'>" . $publisher . "</a>";
-                } else {
-                    return '-';
-                }
+            case 'draftTitle': {
+              $draft = Craft::$app->entryRevisions->getDraftById($this->draftId);
+              $edit_url = $this->getCpEditUrl();
+              return '<a href="' . $edit_url . '">' . $draft->title . '</a>';
+            }
+            case 'stateId': {
+              $stateId = $this->stateId;
+              $current_state = Craft::$app->getElements()->getElementById($stateId, State::class);
+              if (!empty($current_state->name)) {
+                return $current_state->name;
+              }
+              else {
+                return NULL;
+              }
+            }
             case 'editor': {
                 $editor = $this->getEditor();
 
