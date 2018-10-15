@@ -2,11 +2,9 @@
 
 Workflow solution for Lynn University
 
-![Screenshot](resources/img/plugin-logo.png)
-
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
@@ -16,28 +14,18 @@ To install the plugin, follow these instructions.
 
         cd /path/to/project
 
-2. Then tell Composer to load the plugin:
+2. Manually add the repository to your composer.json since this plugin is not listed on packagist
 
-        composer require /lynnworkflow
+		"repositories": [
+			{
+				"type": "git",
+				"url": "https://github.com/the-refinery/workflow.git",
+				"reference": "origin/master"
+			}
+		]
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Lynn Workflow.
+3. Then install the plugin:
 
-## Lynn Workflow Overview
+		composer require therefinery/lynnworkflow
 
--Insert text here-
-
-## Configuring Lynn Workflow
-
--Insert text here-
-
-## Using Lynn Workflow
-
--Insert text here-
-
-## Lynn Workflow Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
-Brought to you by [Phillip Lamb](https://github.com/the-refinery)
+4. In the Control Panel, go to Settings → Plugins and click the “Install” button for Lynn Workflow.
