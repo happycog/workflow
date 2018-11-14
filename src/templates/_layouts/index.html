@@ -2,13 +2,6 @@
 
 {% do view.registerAssetBundle('therefinery\\lynnworkflow\\assetbundles\\LynnWorkflowAsset') %}
 
-{% set tabs = {
-    "lynnworkflow": { label: 'Overview' | t('lynnworkflow'), url: url('lynnworkflow') },
-    "Workflows": { label: 'Workflows' | t('lynnworkflow'), url: url('lynnworkflow/workflows') },
-    drafts: { label: 'Drafts' | t('lynnworkflow'), url: url('lynnworkflow/drafts') },
-    settings: { label: 'Settings' | t('lynnworkflow'), url: url('lynnworkflow/settings') },
-} %}
-
 {% set title = 'Lynn Workflow ' ~ tabs[selectedTab].label %}
 
 {% set content %}

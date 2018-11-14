@@ -22,39 +22,26 @@ class WorkflowsController extends Controller
 
     public function actionList()
     {
-      $user = Craft::$app->getUser()->getIdentity();
-      if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynnworkflow/workflows/index', array());
-      }
-      else {
-        throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
-      }
+      $this->requirePermission('manageLynnWorkflows');
+      
+      $this->renderTemplate('lynnworkflow/workflows/index', array());
     }
 
     public function actionEdit($workflowId = NULL)
     {
-      $user = Craft::$app->getUser()->getIdentity();
-      if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynnworkflow/workflows/_edit', array(
-          'workflowId' => $workflowId,
-        ));
-      }
-      else {
-        throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
-      }
+      $this->requirePermission('manageLynnWorkflows');
+      
+      $this->renderTemplate('lynnworkflow/workflows/_edit', array(
+        'workflowId' => $workflowId,
+      ));
     }
 
     public function actionShow($workflowId = NULL)
     {
-      $user = Craft::$app->getUser()->getIdentity();
-      if ($user->can('manageLynnWorkflows')) {
-        $this->renderTemplate('lynnworkflow/workflows/_show', array(
-          'workflowId' => $workflowId,
-        ));
-      }
-      else {
-        throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
-      }
+      $this->requirePermission('manageLynnWorkflows');
+      $this->renderTemplate('lynnworkflow/workflows/_show', array(
+        'workflowId' => $workflowId,
+      ));
     }
 
     /**
@@ -64,75 +51,71 @@ class WorkflowsController extends Controller
      */
     public function actionSaveWorkflow()
     {
+      $this->requirePermission('manageLynnWorkflows');
       $user = Craft::$app->getUser()->getIdentity();
       $session = Craft::$app->getSession();
 
-      if ($user->can('manageLynnWorkflows')) {
-        $this->requirePostRequest();
-        $create_new_defaults = FALSE;
-        $workflow = $this->_setWorkflowFromPost();
+      $this->requirePostRequest();
+      $create_new_defaults = FALSE;
+      $workflow = $this->_setWorkflowFromPost();
 
-        $isNew = !$workflow->id;
-        if ($isNew) {
-          $create_new_defaults = TRUE;
-        }
-
-        $attributes = Craft::$app->request->getParam('workflow');
-        foreach ($attributes as $attribute => $att_value) {
-          $workflow->$attribute = $att_value;
-        }
-        if (!Craft::$app->getElements()->saveElement($workflow)) {
-          $session->setError(Craft::t('lynnworkflow', 'Could not submit for approval.'));
-          return null;
-        }
-
-        if ($create_new_defaults) {
-          // Create default "Draft" and "Published" states.
-          $new_workflow_id = $workflow->id;
-
-          $draft_state = new State();
-          $draft_state->name = 'Draft';
-          $draft_state->workflowId = $new_workflow_id;
-          $draft_state->description = '';
-          $draft_state->weight = 0;
-          $draft_state->viewGroups = $workflow->groups;
-          $draft_state->editGroups = $workflow->groups;
-          $draft_state->deleteGroups = $workflow->groups;
-
-
-          if (Craft::$app->getElements()->saveElement($draft_state)) {
-              $session->setNotice(Craft::t('lynnworkflow', 'Default draft saved.'));
-              // Now set this as the default state on the workflow.
-              $draft_state_id = $draft_state->id;
-              $workflow->defaultState = $draft_state_id;
-              $save_default = Craft::$app->getElements()->saveElement($workflow);
-          } else {
-            $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default draft state.'));
-          }
-
-          $published_state = new State();
-          $published_state->name = 'Published';
-          $published_state->workflowId = $new_workflow_id;
-          $published_state->description = '';
-          $published_state->weight = 1;
-          $published_state->viewGroups = $workflow->groups;
-          $published_state->editGroups = $workflow->groups;
-          $published_state->deleteGroups = $workflow->groups;
-
-          if (Craft::$app->getElements()->saveElement($published_state)) {
-            $session->setNotice(Craft::t('lynnworkflow', 'Default published state saved.'));
-          } else {
-            $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default published state.'));
-          }
-        }
-
-        $session->setNotice(Craft::t('lynnworkflow', 'Workflow saved.'));
-        $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $workflow->id);
-        return $this->redirect($url);
+      $isNew = !$workflow->id;
+      if ($isNew) {
+        $create_new_defaults = TRUE;
       }
-      else {
-        throw new HttpException(403, Craft::t('This action may only be performed by admins.'));
+
+      $attributes = Craft::$app->request->getParam('workflow');
+      foreach ($attributes as $attribute => $att_value) {
+        $workflow->$attribute = $att_value;
       }
+      if (!Craft::$app->getElements()->saveElement($workflow)) {
+        $session->setError(Craft::t('lynnworkflow', 'Could not submit for approval.'));
+        return null;
+      }
+
+      if ($create_new_defaults) {
+        // Create default "Draft" and "Published" states.
+        $new_workflow_id = $workflow->id;
+
+        $draft_state = new State();
+        $draft_state->name = 'Draft';
+        $draft_state->workflowId = $new_workflow_id;
+        $draft_state->description = '';
+        $draft_state->weight = 0;
+        $draft_state->viewGroups = $workflow->groups;
+        $draft_state->editGroups = $workflow->groups;
+        $draft_state->deleteGroups = $workflow->groups;
+
+
+        if (Craft::$app->getElements()->saveElement($draft_state)) {
+            $session->setNotice(Craft::t('lynnworkflow', 'Default draft saved.'));
+            // Now set this as the default state on the workflow.
+            $draft_state_id = $draft_state->id;
+            $workflow->defaultState = $draft_state_id;
+            $save_default = Craft::$app->getElements()->saveElement($workflow);
+        } else {
+          $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default draft state.'));
+        }
+
+        $published_state = new State();
+        $published_state->name = 'Published';
+        $published_state->workflowId = $new_workflow_id;
+        $published_state->description = '';
+        $published_state->weight = 1;
+        $published_state->viewGroups = $workflow->groups;
+        $published_state->editGroups = $workflow->groups;
+        $published_state->deleteGroups = $workflow->groups;
+
+        if (Craft::$app->getElements()->saveElement($published_state)) {
+          $session->setNotice(Craft::t('lynnworkflow', 'Default published state saved.'));
+        } else {
+          $session->setNotice(Craft::t('lynnworkflow', 'Couldn\'t save the default published state.'));
+        }
+      }
+
+      $session->setNotice(Craft::t('lynnworkflow', 'Workflow saved.'));
+      $url = UrlHelper::cpUrl('lynnworkflow/workflows/' . $workflow->id);
+      return $this->redirect($url);
     }
 
     /**
@@ -142,6 +125,7 @@ class WorkflowsController extends Controller
      */
     public function actionDeleteWorkflow()
     {
+      $this->requirePermission('manageLynnWorkflows');
       $this->requirePostRequest();
 
       $workflowId = Craft::$app->request->getRequiredParam('id');

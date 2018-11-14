@@ -27,6 +27,7 @@ class BaseController extends Controller
 
     public function actionSettings()
     {
+        $this->requirePermission('manageLynnWorkflows');
         $settings = LynnWorkflow::$plugin->getSettings();
         $workflows = LynnWorkflow::$plugin->getWorkflows()->getAllWorkflows();
 

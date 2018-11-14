@@ -24,6 +24,11 @@ use craft\helpers\DateTimeHelper;
 use DateTime;
 use craft\web\twig\variables\CraftVariable;
 
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
+use craft\web\View;
+use craft\events\TemplateEvent;
+
 use yii\base\Event;
 use yii\web\User;
 
@@ -116,6 +121,46 @@ class LynnWorkflow extends Plugin
               }
             }
         );
+
+        /**
+         * Creates a custom permission type for admin users to access
+         * Workflow and settings tabs in plugin
+         * Access to the plugin itself is set with General Premission 'Access LynnWorkflow'
+         */
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event) {
+                $event->permissions['Lynn Workflows'] = [
+                    'manageLynnWorkflows' => [
+                        'label' => 'Manage Lynn Workflows',
+                    ],
+                ];
+            }
+        );
+
+        /**
+         * defines the tabs based on user permisions
+         * 
+         * See here for a how-to: https://github.com/craftcms/cms/issues/2326
+         */
+        Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE, function(TemplateEvent $e) {
+            if (Craft::$app->user->checkPermission('stayUpLate')) {
+                // Admin only tabs
+                $e->variables['tabs'] = [
+                    'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
+                    'Workflows' => ['label' => 'Workflows', 'url' => UrlHelper::url('lynnworkflow/workflows')],
+                    'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
+                    'settings' => ['label' => 'Settings', 'url' => UrlHelper::url('lynnworkflow/settings')],
+                ];
+            }else{
+                // regular user tabs
+                $e->variables['tabs'] = [
+                    'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
+                    'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
+                ];
+            }
+        });
     }
 
     public function registerCpUrlRules(RegisterUrlRulesEvent $event)
