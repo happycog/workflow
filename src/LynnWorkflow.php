@@ -145,20 +145,25 @@ class LynnWorkflow extends Plugin
          * See here for a how-to: https://github.com/craftcms/cms/issues/2326
          */
         Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE, function(TemplateEvent $e) {
-            if (Craft::$app->user->checkPermission('stayUpLate')) {
+          // Craft::dump($e);
+            if (
+                substr($e->template, 0, 12) === 'lynnworkflow' 
+            ) {
+              if (Craft::$app->user->checkPermission('manageLynnWorkflows')) {
                 // Admin only tabs
                 $e->variables['tabs'] = [
-                    'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
-                    'Workflows' => ['label' => 'Workflows', 'url' => UrlHelper::url('lynnworkflow/workflows')],
-                    'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
-                    'settings' => ['label' => 'Settings', 'url' => UrlHelper::url('lynnworkflow/settings')],
+                  'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
+                  'Workflows' => ['label' => 'Workflows', 'url' => UrlHelper::url('lynnworkflow/workflows')],
+                  'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
+                  'settings' => ['label' => 'Settings', 'url' => UrlHelper::url('lynnworkflow/settings')],
                 ];
-            }else{
+              }else{
                 // regular user tabs
                 $e->variables['tabs'] = [
-                    'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
-                    'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
+                  'lynnworkflow' => ['label' => 'Overview', 'url' => UrlHelper::url('lynnworkflow')],
+                  'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
                 ];
+              }
             }
         });
     }
