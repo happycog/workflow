@@ -208,7 +208,7 @@
   {% set css %}
     #extra-headers .btngroup { display: none; }
   {% endset %}
-  {% css css first %}
+  {% css css %}
   {% endif %}
 
   {% if allowSave == false %}
@@ -228,5 +228,5 @@
     {% endset %}
   {% endif %}
 
-  {% js js first %}
+  {% js js %}
 {% endif %}
