@@ -1,3 +1,6 @@
+{# 
+Provides a sidebar pane for the entry edit page
+ #}
 {% do view.registerAssetBundle('therefinery\\lynnworkflow\\assetbundles\\LynnWorkflowAsset') %}
 
 {% import "_includes/forms" as forms %}
@@ -7,7 +10,11 @@
 {% set allowDelete = false %}
 {% set isVersion = false %}
 <div class="pane workflow-pane">
-{% if submission is not defined %}
+{% if submission is not defined %}  
+{# {% if submissions|length == 0 %}   #}
+  {# <p>submission is not defined</p> #}
+  {# JO: `submission` is NEVER passed to template. Why is this here? Was `submissions` plural intended?
+        `submissions` is an array of elements returned by a query, even if entry has no submissions, variable would be defined as an empty array #}
   {% set sectionHandle = section.handle %}
   {% set isSingle = section.type == 'single' %}
   {% set isVersion = false %}
@@ -208,7 +215,7 @@
   {% set css %}
     #extra-headers .btngroup { display: none; }
   {% endset %}
-  {% css css first %}
+  {% css css %}
   {% endif %}
 
   {% if allowSave == false %}
@@ -227,6 +234,12 @@
       $('form#container .formsubmit[data-action="entryRevisions/deleteDraft"]').remove();
     {% endset %}
   {% endif %}
-
-  {% js js first %}
+  {% js js %}
 {% endif %}
+{# Sections: <pre>{{ craft.app.request.segments|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+Entry Section/Type: {{ context.entry.section.handle }} / {{ context.entry.type.handle }} <br> #}
+{# Entry ID: {{ context.entry.id }} <br> #}
+{# Allow Save: {{ allowSave }} <br> #}
+{# permissionSuffix: {{ permissionSuffix }} <br> #}
+{# Draft ID: {{ context.entry.draftId }} <br> #}
+{# Settings: <pre>{{ wfsettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
