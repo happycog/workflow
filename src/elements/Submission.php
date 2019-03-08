@@ -137,6 +137,9 @@ class Submission extends Element
 
     public function getCpEditUrl()
     {
+        if(!$this->getOwner()){
+            return false;
+        }
         $cpEditUrl = $url = $this->getOwner()->cpEditUrl;
 
         if ($this->draftId) {
@@ -243,7 +246,12 @@ class Submission extends Element
             case 'draftTitle': {
               $draft = Craft::$app->entryRevisions->getDraftById($this->draftId);
               $edit_url = $this->getCpEditUrl();
-              return '<a href="' . $edit_url . '">' . $draft->title . '</a>';
+              // JO: temp fix for PTC entries
+              if($edit_url){
+                return '<a href="' . $edit_url . '">' . $draft->title . '</a>';
+              }else{
+                return $draft->title;
+              }
             }
             case 'stateId': {
               $stateId = $this->stateId;

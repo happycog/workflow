@@ -28,3 +28,13 @@ To install the plugin, follow these instructions.
 		composer require therefinery/lynnworkflow
 
 4. In the Control Panel, go to Settings → Plugins and click the “Install” button for Lynn Workflow.
+
+
+## Thrid party libraries
+
+### diff-match-patch.js
+Lib that can diff two strings. Used in the CraftCMS 2 version of the plugin
+https://github.com/google/diff-match-patch
+
+## Other notes
+Updates to plugin that invoive DB changes will require writing a Migration (https://docs.craftcms.com/v3/extend/migrations.html#creating-migrations)
