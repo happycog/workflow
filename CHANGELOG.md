@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.11 - 2019-03-21
+### Added
+- ported diff feature from CraftCMS 2 version of plugin
+
 ## 1.0.4 - 2018-10-15
 ### Fixed
 - Meta data fixes

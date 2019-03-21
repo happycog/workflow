@@ -23,8 +23,12 @@ class WorkflowsController extends Controller
     public function actionList()
     {
       $this->requirePermission('manageLynnWorkflows');
+
+      // Craft::$app->getSites()->setCurrentSite(2);
       
-      $this->renderTemplate('lynnworkflow/workflows/index', array());
+      $this->renderTemplate('lynnworkflow/workflows/index', array(
+        'siteId' => Craft::$app->getSites()->getCurrentSite()->id
+      ));
     }
 
     public function actionEdit($workflowId = NULL)

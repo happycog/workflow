@@ -21,6 +21,7 @@
     { label: "Workflow management"|t, url: url('lynnworkflow') },
     { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
 ] %}
+{% set selectedTab = 'Workflows' %}
 
 {% set states = craft.lynnworkflow.getAllStates(workflowId) %}
 

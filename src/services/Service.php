@@ -8,6 +8,7 @@ use therefinery\lynnworkflow\services\Workflows;
 
 use Craft;
 use craft\base\Component;
+use yii\web\ServerErrorHttpException;
 
 class Service extends Component
 {
@@ -110,6 +111,17 @@ class Service extends Component
       $permission_suffix = ':'.$context['entry']->sectionId;
       $baseCpEditUrl = 'entries/'.$context['section']->handle.'/{id}-{slug}';
 
+      // create a diff for entries with previous versions
+      $diff = FALSE;
+
+      // Check if entry type has an URL, which is required to produce a diff
+      $entry = $context['entry'];
+      $sectionSiteSettings = $entry->getSection()->getSiteSettings();
+      if ($has_existing_drafts && isset($context['draftId']) && isset($sectionSiteSettings[$entry->siteId]) && $sectionSiteSettings[$entry->siteId]->hasUrls) {
+        $diff = $this->prepareForDiff($context);
+      }
+      
+
       return Craft::$app->view->renderTemplate('lynnworkflow/_includes/workflow-pane', array(
           'baseCpEditUrl' => $baseCpEditUrl,
           'permissionSuffix' => $permission_suffix,
@@ -120,9 +132,110 @@ class Service extends Component
           'enabledWorkflow' => $enabled_workflow,
           'currentUser' => $user,
           'hasExistingDrafts' => $has_existing_drafts,
+          'diff' => $diff
 
           // 'wfsettings' => $settings,
       ));
   }
+
+  /**
+   * Prepares an entry's live and draft content to be passed to a diffing function
+   * 
+   * Returns rendered content for a given entry context. $context should
+   * contain keys for 'entryId' and 'draftId', for which the function renders
+   * site-side versions of the page and extracts main content for each.
+   * The output should be fit to be passed to a diffing function like diff_match_patch.js
+   * 
+   * @param  Array $context A rendering context for a CP edit entity
+   * @return Array          'live' and 'draft' versions of the entry
+   */
+  public function prepareForDiff($context){
+    $diff = array(
+      'live' => 'Current Content\nSecond Line',
+      'draft' => 'Draft Content\nSecond Line'
+    );
+
+    // temporarily set rendering mode to 'site'
+    $view = Craft::$app->getView();
+    $templateMode = $view->getTemplateMode();
+    $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
+
+    // render a copy of the live content
+    $live_model = Craft::$app->entries->getEntryById($context['entryId']);
+    $section = $live_model->getSection();
+    $type = $live_model->getType();
+    if (!$section || !$type) {
+      // we need to have a section to render the content
+      Craft::log('Attempting to preview an entry that doesn’t have a section/type', LogLevel::Error);
+      throw new HttpException(404);
+    }
+
+    $diff['siteId'] = $live_model->siteId;
+    $diff['section'] = $live_model->getSection()->getSiteSettings()[1]->siteId;
+    $diff['template'] = $live_model->getSection()->getSiteSettings()[1]->template;
+
+    $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
+
+    // render a copy of the draft content
+    $draft_model = Craft::$app->getEntryRevisions()->getDraftById($context['draftId']);
+    $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
+
+    // reset template mode to 'control panel'
+    $view->setTemplateMode($templateMode);
+
+    return $diff;
+  }
+
+  /**
+   * Based on EntryController::_showEntry a private function used by CraftCMS to render previews.
+   * Function has been copied and modified to provide a rendering of a live or draft entry for
+   * purposes of performing a diff.
+   * @param  Object $entry        An entry or draft mobel
+   * @param  String $templateMode Template mode to fall-back to in case of error, usually CP
+   * @return String               The contents of the rendered page, striped of header and footer
+   */
+  private function _templateEntry($entry, $templateMode)
+    {
+        $sectionSiteSettings = $entry->getSection()->getSiteSettings();
+        $view = Craft::$app->getView();
+
+        if (!isset($sectionSiteSettings[$entry->siteId]) || !$sectionSiteSettings[$entry->siteId]->hasUrls) {
+          Craft::$app->setTemplateMode($templateMode);
+            throw new ServerErrorHttpException('The entry ' . $entry->id . ' doesn’t have a URL for the site ' . $entry->siteId . '.');
+        }
+
+        $site = Craft::$app->getSites()->getSiteById($entry->siteId);
+
+        if (!$site) {
+          Craft::$app->setTemplateMode($templateMode);
+            throw new ServerErrorHttpException('Invalid site ID: ' . $entry->siteId);
+        }
+
+        Craft::$app->language = $site->language;
+        Craft::$app->set('locale', Craft::$app->getI18n()->getLocaleById($site->language));
+
+        if (!$entry->postDate) {
+            $entry->postDate = new DateTime();
+        }
+
+        // Have this entry override any freshly queried entries with the same ID/site ID
+        // Craft::$app->getElements()->setPlaceholderElement($entry);
+        // JO: Disabled due to weird side effects
+
+        $view->getTwig()->disableStrictVariables();
+        // return 'template entry';
+
+        $rendered = $view->renderTemplate($sectionSiteSettings[$entry->siteId]->template, [
+            'entry' => $entry,
+            'forDiff' => TRUE
+        ]);
+
+        // Now manipulate the result to strip everything outside of
+        // <main id="content" role="main"> </main>
+        $rendered = strstr($rendered, '<main id="content" role="main">');
+        $rendered = strstr($rendered, '</main>', TRUE);
+        $rendered = preg_replace('#(<br */?>\s*)+#i', '<br />', $rendered);
+        return $rendered;
+    }
 
 }

@@ -6,6 +6,7 @@
     { label: "Lynn Workflow"|t, url: url('lynnworkflow') },
     { label: "All Workflows"|t, url: url('lynnworkflow/workflows') }
 ] %}
+{% set selectedTab = 'Workflows' %}
 
 {% if workflowId is not defined %}{% set workflowId = null %}{% endif %}
 {% if workflow is not defined %}

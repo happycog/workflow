@@ -18,6 +18,10 @@ class LynnWorkflowAsset extends AssetBundle
             CpAsset::class,
         ];
 
+        $this->js = [
+            'js/diff_match_patch.js',
+        ];
+
         $this->css = [
             'css/workflow.css',
         ];

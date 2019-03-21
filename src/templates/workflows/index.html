@@ -18,7 +18,8 @@
     <p id="noworkflows"{% if workflows|length %} class="hidden"{% endif %}>
         {{ "No Workflows exist yet."|t }}
     </p>
-
+    Number of workflows: {{ workflows|length }} <br>
+    Site ID {{ siteId }}
     {% if workflows|length %}
         <table id="workflows" class="data">
             <thead>
@@ -29,7 +30,7 @@
 
                 {% for workflow in workflows.all() %}
                     <tr data-id="{{ workflow.id }}" data-name="{{ workflow.name|t }}">
-                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id) }}">{{ workflow.name }}</a></td>
+                        <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id) }}">{{ workflow.name }}</a> {{ workflow.siteId }}</td>
                         <td><a href="{{ url('lynnworkflow/workflows/'~workflow.id~'/edit') }}" class="edit icon" title="{{ 'Edit'|t }}"></a></td>
                         <td><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
                     </tr>
