@@ -250,7 +250,7 @@ class Submission extends Element
               if($edit_url){
                 return '<a href="' . $edit_url . '">' . $draft->title . '</a>';
               }else{
-                return $draft->title;
+                return $draft ? $draft->title : 'Title Unknown';
               }
             }
             case 'stateId': {

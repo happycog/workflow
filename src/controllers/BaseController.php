@@ -44,18 +44,8 @@ class BaseController extends Controller
         $user = Craft::$app->getUser()->getIdentity();
         $submission_id = Craft::$app->request->getParam('submissionId');
         $fields = Craft::$app->request->getParam('fields');
-        $title = Craft::$app->request->getParam('title');
-        if (!empty($fields['articleHeadline'])) {
-          $headline = $fields['articleHeadline'];
-        }
-        else {
-          if (!empty($title)) {
-            $headline = $title;
-          }
-          else {
-            $headline = 'Submission';
-          }
-        }
+        
+
         $entry_id = Craft::$app->request->getParam('entryId');
         $draft_id = Craft::$app->request->getParam('draftId');
         $state_info = Craft::$app->request->getParam('targetState');
@@ -66,6 +56,26 @@ class BaseController extends Controller
         $state_id = Craft::$app->request->getParam('stateId');
         $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
         $author_id = $draft->creatorId;
+
+
+        $title = Craft::$app->request->getParam('title');
+        if (!empty($fields['articleHeadline'])) {
+          $headline = $fields['articleHeadline'];
+        }
+        else {
+          if (!empty($title)) {
+            $headline = $title;
+          }
+          else if (isset($draft->title)) {
+            // entries with auto-generated titles have empty 'title' parameters, try fetching them from draft
+            $headline = $draft->title;
+          }
+          else {
+            $headline = 'Submission';
+          }
+        }
+
+
         // Pull the current transition info.
         $current_transition = LynnWorkflow::$plugin->getTransitions($workflow_id, $state_id)->getTransitionById($transition_id);
         $current_state = LynnWorkflow::$plugin->getStates($workflow_id)->getStateById($state_id);

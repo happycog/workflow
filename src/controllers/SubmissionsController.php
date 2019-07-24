@@ -98,9 +98,9 @@ class SubmissionsController extends Controller
 
         // Check if we're approving a draft - we publish it too.
         if ($draftId) {
-            $draft = Craft::$app->getEntryRevisions()->getDraftById($draftId);
+            $draft = Craft::$app->getEntryRevisions()->getDraftById($draftId); // DEPRECATED
 
-            if (!Craft::$app->getEntryRevisions()->publishDraft($draft)) {
+            if (!Craft::$app->getEntryRevisions()->publishDraft($draft)) { // DEPRECATED
                 Craft::$app->getSession()->setError(Craft::t('lynnworkflow', 'Couldn’t publish draft.'));
                 return null;
             }

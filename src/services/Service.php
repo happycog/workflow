@@ -215,7 +215,7 @@ class Service extends Component
         Craft::$app->set('locale', Craft::$app->getI18n()->getLocaleById($site->language));
 
         if (!$entry->postDate) {
-            $entry->postDate = new DateTime();
+            $entry->postDate = new \DateTime();
         }
 
         // Have this entry override any freshly queried entries with the same ID/site ID
