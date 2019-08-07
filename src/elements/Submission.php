@@ -9,6 +9,7 @@ use therefinery\lynnworkflow\elements\State;
 
 use Craft;
 use craft\base\Element;
+use craft\elements\Entry;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
@@ -135,21 +136,29 @@ class Submission extends Element
         return $this->status;
     }
 
+    /**
+     * Create a valid control panel URL for editing draft
+     * 
+     * /lynnedu_admin/entries/collection/66808-student-life?site=lynnedu&draftId=281
+     * 
+     * @return String URL
+     */
     public function getCpEditUrl()
     {
         if(!$this->getOwner()){
             return false;
         }
-        $cpEditUrl = $url = $this->getOwner()->cpEditUrl;
+        $cpEditUrl = $url = $this->getOwner()->cpEditUrl; // returns everything but draftId
 
         if ($this->draftId) {
-            if (Craft::$app->getIsMultiSite()) {
-                $cpEditUrl = explode('/', $cpEditUrl);
-                array_pop($cpEditUrl);
-                $cpEditUrl = implode('/', $cpEditUrl);
-            }
+        //     if (Craft::$app->getIsMultiSite()) {
+        //         $cpEditUrl = explode('/', $cpEditUrl);
+        //         array_pop($cpEditUrl);
+        //         $cpEditUrl = implode('/', $cpEditUrl);
+        //     }
 
-            $url = $cpEditUrl . '/drafts/' . $this->draftId;
+        //     $url = $cpEditUrl . '/drafts/' . $this->draftId;
+            $url = $cpEditUrl . '&draftId=' .  $this->draftId;
         }
 
         return $url;
@@ -244,13 +253,19 @@ class Submission extends Element
     {
         switch ($attribute) {
             case 'draftTitle': {
-              $draft = Craft::$app->entryRevisions->getDraftById($this->draftId);
+              // $draft = Craft::$app->entryRevisions->getDraftById($this->draftId); // deprecated
+              $draft = Entry::find()->draftId($this->draftId)->one(); // v3.2
+              if(!$draft){
+                $title = 'Draft not found';
+              } else {
+                $title = $draft->title;
+              }
               $edit_url = $this->getCpEditUrl();
               // JO: temp fix for PTC entries
-              if($edit_url){
-                return '<a href="' . $edit_url . '">' . $draft->title . '</a>';
+              if($edit_url && $draft){
+                return '<a href="' . $edit_url . '">' . $title . '</a>';
               }else{
-                return $draft ? $draft->title : 'Title Unknown';
+                return $title;
               }
             }
             case 'stateId': {

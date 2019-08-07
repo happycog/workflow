@@ -53,21 +53,21 @@ class SetStatus extends ElementAction
         // Did all of them fail?
         if ($failCount === count($elements)) {
             if (count($elements) === 1) {
-                $this->setMessage(Craft::t('lynn-workflow', 'Could not update status due to a validation error.'));
+                $this->setMessage(Craft::t('lynnworkflow', 'Could not update status due to a validation error.'));
             } else {
-                $this->setMessage(Craft::t('lynn-workflow', 'Could not update statuses due to validation errors.'));
+                $this->setMessage(Craft::t('lynnworkflow', 'Could not update statuses due to validation errors.'));
             }
 
             return false;
         }
 
         if ($failCount !== 0) {
-            $this->setMessage(Craft::t('lynn-workflow', 'Status updated, with some failures due to validation errors.'));
+            $this->setMessage(Craft::t('lynnworkflow', 'Status updated, with some failures due to validation errors.'));
         } else {
             if (count($elements) === 1) {
-                $this->setMessage(Craft::t('lynn-workflow', 'Status updated.'));
+                $this->setMessage(Craft::t('lynnworkflow', 'Status updated.'));
             } else {
-                $this->setMessage(Craft::t('lynn-workflow', 'Statuses updated.'));
+                $this->setMessage(Craft::t('lynnworkflow', 'Statuses updated.'));
             }
         }
 

@@ -29,12 +29,15 @@ class Submissions extends Widget
 
     public function getBodyHtml()
     {
-        $submissions = Submission::find()
-            ->limit($this->limit)
-            ->all();
+        $submissionQuery = Submission::find()
+            ->limit($this->limit);
+
+        $submissions = $submissionQuery->all();
+        $sql = $submissionQuery->getRawSql();
 
         return Craft::$app->getView()->renderTemplate('lynnworkflow/_components/widgets/body', [
             'submissions' => $submissions,
+            'sql' => $sql
         ]);
     }
 

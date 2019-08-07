@@ -27,7 +27,8 @@ class Submissions extends Component
         if ($publish) {
             $draft->enabled = true;
             Craft::$app->getElements()->saveElement($model);
-            Craft::$app->entryRevisions->publishDraft($draft); // DEPRECATED
+            // Craft::$app->entryRevisions->publishDraft($draft); // DEPRECATED
+            Craft::$app->drafts->applyDraft($draft);
             $result = TRUE;
         }
         else {

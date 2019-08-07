@@ -7,6 +7,7 @@ use craft\helpers\DateTimeHelper;
 use DateTime;
 use craft\base\ElementTrait;
 use craft\elements\User;
+use craft\elements\Entry;
 use craft\mail\Message;
 
 use therefinery\lynnworkflow\LynnWorkflow;
@@ -101,7 +102,8 @@ class BaseController extends Controller
         //$saved = $this->saveDraftChanges();
         // Check if we're approving a draft - we publish it too.
         if ($saved && $draft_id) {
-            $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
+            // $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
+            $draft = Entry::find()->draftId($draft_id)->one(); // v3.2
         } else {
             $draft = null;
         }

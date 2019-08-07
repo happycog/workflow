@@ -26,7 +26,7 @@ class SubmissionQuery extends ElementQuery
         return $this;
     }
 
-    public function draftId($value)
+    public function draftId(int $value = null)
     {
         $this->draftId = $value;
         return $this;
@@ -63,6 +63,8 @@ class SubmissionQuery extends ElementQuery
     protected function beforePrepare(): bool
     {
         $this->joinElementTable('lynnworkflow_submissions');
+        /*    By Default `ElementQuery` filters out drafts and revisions, we hve to add it back in */
+        $this->drafts();
 
         $this->query->select([
             'lynnworkflow_submissions.*',

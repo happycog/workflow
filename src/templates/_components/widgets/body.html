@@ -7,7 +7,7 @@
                         <td>
                             {% set state = craft.lynnworkflow.getStateById(submission.stateId) %} {{ state.name | t }} -
                             {% if submission.owner %}
-                            <a href="{{ submission.owner.cpEditUrl }}">{{ submission.owner.title }}</a>
+                            <a href="{{ submission.cpEditUrl }}">{{ submission.owner.title }}</a>
                             {% else %}
                             Unknown Entry (Submission id: {{ submission.id }})
                             {% endif %}
@@ -20,4 +20,5 @@
     {% else %}
         <p>{{ "No submissions." | t('workflow') }}</p>
     {% endif %}
+    <!-- SQL: <pre>{{ sql }}</pre> -->
 </div>

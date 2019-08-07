@@ -4,6 +4,7 @@ namespace therefinery\lynnworkflow\controllers;
 use therefinery\lynnworkflow\elements\Submission;
 
 use Craft;
+use craft\elements\Entry;
 use craft\web\Controller;
 
 use craft\helpers\DateTimeHelper;
@@ -99,6 +100,9 @@ class SubmissionsController extends Controller
         // Check if we're approving a draft - we publish it too.
         if ($draftId) {
             $draft = Craft::$app->getEntryRevisions()->getDraftById($draftId); // DEPRECATED
+            // $draft =  \craft\elements\Entry::find()->draftId($draftId)->one(); // v3.2
+
+
 
             if (!Craft::$app->getEntryRevisions()->publishDraft($draft)) { // DEPRECATED
                 Craft::$app->getSession()->setError(Craft::t('lynnworkflow', 'Couldn’t publish draft.'));

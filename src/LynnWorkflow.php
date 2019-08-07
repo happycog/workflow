@@ -14,10 +14,13 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\DraftEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Dashboard;
 use craft\services\Elements;
-use craft\services\EntryRevisions;
+use craft\services\EntryRevisions; // deprecated
+use craft\services\Drafts;
+use craft\elements\Entry;
 use craft\services\SystemMessages;
 use craft\web\UrlManager;
 use craft\helpers\DateTimeHelper;
@@ -39,6 +42,8 @@ class LynnWorkflow extends Plugin
     // =========================================================================
 
     use PluginTrait;
+
+    public $schemaVersion = '0.2.0';
 
 
     // Public Methods
@@ -67,60 +72,120 @@ class LynnWorkflow extends Plugin
             $event->sender->set('lynnworkflow', LynnWorkflowVariable::class);
         });
 
-        // Do something after we're installed
-        Event::on(
-            EntryRevisions::class,
-            EntryRevisions::EVENT_AFTER_SAVE_DRAFT,
-            function (Event $event) {
-              $user = Craft::$app->getUser()->getIdentity();
-              // Get settings for workflows.
-              $settings = LynnWorkflow::$plugin->getSettings();
-              $draft = $event->draft;
-              $draft_id = $draft->draftId;
-              // Is this a new draft (aka, it doesn't have an entry in submissions?)
-              $existing_submission = Submission::find()
-                        ->draftId($draft_id)
-                        ->all();
-              if (empty($existing_submission)) {
-                $entry_id = Craft::$app->request->getParam('entryId');
-                $latest_version = Craft::$app->entryRevisions->getVersionsByEntryId($entry_id, FALSE, 1, TRUE);
-                $version_id = NULL;
-                if (!empty($latest_version)) {
-                  $latest_version = current($latest_version);
-                  $version_id = $latest_version->versionId;
-                }
-                $section_id = $draft->sectionId;
-                $type_id = $draft->typeId;
-                // Check to see if there's a valid workflow for this section/type:
-                $enabled_workflows = $settings->enabledWorkflows;
-                $enabled_workflow = FALSE;
-                // See if an entry exists for the sectionId-typeId.
-                if (!empty($enabled_workflows[$section_id . '-' . $type_id])) {
-                  $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id . '-' . $type_id], Workflow::class);
-                }
-                else if (!empty($enabled_workflows[$section_id])) {
-                  $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id], Workflow::class);
-                }
-                if ($enabled_workflow) {
-                  // Get the default state.
-                  $default_workflow_state = $enabled_workflow->defaultState;
-
-                  // Determine the default state id from the workflow.
-                  $model = new Submission();
-                  $model->ownerId = $entry_id;
-                  $model->draftId = $draft_id;
-                  $model->versionId = $version_id;
-                  $model->editorId = $user->id;
-                  $model->stateId = $default_workflow_state;
-                  $model->dateCreated = new DateTime();
-                  Craft::$app->getElements()->saveElement($model);
-                }
+        
+        Event::on( // https://craftcms.stackexchange.com/questions/26797/user-events-in-craft-3
+          Drafts::class,
+          Drafts::EVENT_AFTER_CREATE_DRAFT,
+          function (DraftEvent $event) {
+            $user = Craft::$app->getUser()->getIdentity();
+            
+            // Get settings for workflows.
+            $settings = LynnWorkflow::$plugin->getSettings();
+            $draft = $event->draft; // `createDraft` function saves a draft with ID then calls EVENT_AFTER_CREATE_DRAFT
+            $draft_id = $draft->draftId;
+            
+            // Is this a new draft (aka, it doesn't have an entry in submissions?)
+            $existing_submission = Submission::find()
+              ->draftId($draft_id)
+              ->all();
+            if (empty($existing_submission)) {
+              // Create a submission record for this new draft
+              
+              // Get the ID number for the latest version if exists (stored in Submission)
+              $entry_id = Craft::$app->request->getParam('entryId');
+              $version_id = NULL;
+              $latestVersion = Entry::find()->revisionOf($entry_id)->addOrderBy('id DESC')->one();
+              if (!empty($versions)) {
+                $version_id = $latestVersion->versionId;
               }
-              else {
-                // Should we do something when there's a state?
+
+              $section_id = $draft->sectionId;
+              $type_id = $draft->typeId;
+
+              // Check to see if there's a valid workflow for this section/type:
+              $enabled_workflows = $settings->enabledWorkflows;
+              $enabled_workflow = FALSE;
+              // See if an entry exists for the sectionId-typeId.
+              if (!empty($enabled_workflows[$section_id . '-' . $type_id])) {
+                $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id . '-' . $type_id], Workflow::class);
+              }
+              else if (!empty($enabled_workflows[$section_id])) {
+                $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id], Workflow::class);
+              }
+              if ($enabled_workflow) {
+                // Get the default state.
+                $default_workflow_state = $enabled_workflow->defaultState;
+
+                // Determine the default state id from the workflow.
+                $model = new Submission();
+                $model->ownerId = $entry_id;
+                $model->draftId = $draft_id;
+                $model->versionId = $version_id;
+                $model->editorId = $user->id;
+                $model->stateId = $default_workflow_state;
+                $model->dateCreated = new DateTime();
+                Craft::$app->getElements()->saveElement($model);
               }
             }
+            else { // empty($existing_submission
+              // Should we do something when there's a state?
+            }
+          }
         );
+        // Do something after we're installed
+        // Event::on(
+        //     EntryRevisions::class,
+        //     EntryRevisions::EVENT_AFTER_SAVE_DRAFT, // deprecated in Craft 3.2
+        //     function (Event $event) {
+        //       $user = Craft::$app->getUser()->getIdentity();
+        //       // Get settings for workflows.
+        //       $settings = LynnWorkflow::$plugin->getSettings();
+        //       $draft = $event->draft;
+        //       $draft_id = $draft->draftId;
+        //       // Is this a new draft (aka, it doesn't have an entry in submissions?)
+        //       $existing_submission = Submission::find()
+        //                 ->draftId($draft_id)
+        //                 ->all();
+        //       if (empty($existing_submission)) {
+        //         $entry_id = Craft::$app->request->getParam('entryId');
+        //         $latest_version = Craft::$app->entryRevisions->getVersionsByEntryId($entry_id, FALSE, 1, TRUE);
+        //         $version_id = NULL;
+        //         if (!empty($latest_version)) {
+        //           $latest_version = current($latest_version);
+        //           $version_id = $latest_version->versionId;
+        //         }
+        //         $section_id = $draft->sectionId;
+        //         $type_id = $draft->typeId;
+        //         // Check to see if there's a valid workflow for this section/type:
+        //         $enabled_workflows = $settings->enabledWorkflows;
+        //         $enabled_workflow = FALSE;
+        //         // See if an entry exists for the sectionId-typeId.
+        //         if (!empty($enabled_workflows[$section_id . '-' . $type_id])) {
+        //           $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id . '-' . $type_id], Workflow::class);
+        //         }
+        //         else if (!empty($enabled_workflows[$section_id])) {
+        //           $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id], Workflow::class);
+        //         }
+        //         if ($enabled_workflow) {
+        //           // Get the default state.
+        //           $default_workflow_state = $enabled_workflow->defaultState;
+
+        //           // Determine the default state id from the workflow.
+        //           $model = new Submission();
+        //           $model->ownerId = $entry_id;
+        //           $model->draftId = $draft_id;
+        //           $model->versionId = $version_id;
+        //           $model->editorId = $user->id;
+        //           $model->stateId = $default_workflow_state;
+        //           $model->dateCreated = new DateTime();
+        //           Craft::$app->getElements()->saveElement($model);
+        //         }
+        //       }
+        //       else {
+        //         // Should we do something when there's a state?
+        //       }
+        //     }
+        // );
 
         /**
          * Creates a custom permission type for admin users to access

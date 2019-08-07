@@ -6,8 +6,9 @@ use therefinery\lynnworkflow\LynnWorkflow;
 use Craft;
 use craft\base\Component;
 use craft\db\Query;
+use craft\elements\Entry;
 use craft\helpers\Json;
-use craft\models\EntryDraft;
+use craft\models\EntryDraft; // deprecated v3.2
 
 // use yii\web\UserEvent;
 
@@ -18,14 +19,16 @@ class Drafts extends Component
 
     public function getAllDrafts()
     {
-        $results = $this->_getDraftsQuery()->all();
+        // $results = $this->_getDraftsQuery()->all();
 
-        $drafts = [];
+        // $drafts = [];
 
-        foreach ($results as $result) {
-            $result['data'] = Json::decode($result['data']);
-            $drafts[] = new EntryDraft($result);
-        }
+        // foreach ($results as $result) {
+        //     $result['data'] = Json::decode($result['data']);
+        //     $drafts[] = new EntryDraft($result);  // deprecated v3.2
+        // }
+        
+        $drafts = Entry::find()->drafts()->all();
 
         return $drafts;
     }
@@ -34,22 +37,22 @@ class Drafts extends Component
     // Private Methods
     // =========================================================================
 
-    private function _getDraftsQuery(): Query
-    {
-        return (new Query())
-            ->select([
-                'id',
-                'entryId',
-                'sectionId',
-                'creatorId',
-                'siteId',
-                'name',
-                'notes',
-                'data',
-                'dateCreated',
-                'dateUpdated',
-                'uid',
-            ])
-            ->from(['{{%entrydrafts}}']);
-    }
+    // private function _getDraftsQuery(): Query
+    // {
+    //     return (new Query())
+    //         ->select([
+    //             'id',
+    //             'entryId',
+    //             'sectionId',
+    //             'creatorId',
+    //             'siteId',
+    //             'name',
+    //             'notes',
+    //             'data',
+    //             'dateCreated',
+    //             'dateUpdated',
+    //             'uid',
+    //         ])
+    //         ->from(['{{%entrydrafts}}']);
+    // }
 }

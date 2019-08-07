@@ -7,6 +7,7 @@ use therefinery\lynnworkflow\elements\Workflow;
 use therefinery\lynnworkflow\services\Workflows;
 
 use Craft;
+use craft\elements\Entry;
 use craft\base\Component;
 use yii\web\ServerErrorHttpException;
 
@@ -89,18 +90,21 @@ class Service extends Component
       }
 
       // See if there's an existing submission
-      $draftId = (isset($context['draftId'])) ? $context['draftId'] : ':empty:';
+      $submissions = array();
+      $subSQL = '';
+      $draftId = (isset($context['draftId'])) ? $context['draftId'] : false;
       if (!empty($context['versionId'])) {
         $submissions = Submission::find() // JO: uses lynnworkflow\elements\db\SubmissionQuery
-          ->ownerId($context['entry']->id)
+          // ->ownerId($context['entry']->id) // which user should this be? the creater of the draft?
           ->versionId($context['versionId'])
           ->all();
       }
-      else {
-        $submissions = Submission::find()
-          ->ownerId($context['entry']->id)
-          ->draftId($draftId)
-          ->all();
+      else if ($draftId) {
+        $submissionsQuery = Submission::find()
+          // ->ownerId($context['entry']->id)
+          ->draftId($draftId);
+        $submissions = $submissionsQuery->all();
+        $subSQL = $submissionsQuery->getRawSql();
       }
       $has_existing_drafts = FALSE;
       $existing_drafts = Craft::$app->entryRevisions->getDraftsByEntryId($context['entry']->id);
@@ -134,7 +138,8 @@ class Service extends Component
           'hasExistingDrafts' => $has_existing_drafts,
           'diff' => $diff
 
-          // 'wfsettings' => $settings,
+          ,'wfsettings' => $settings
+          ,'subSQL' => $subSQL
       ));
   }
 
@@ -177,7 +182,9 @@ class Service extends Component
     $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
 
     // render a copy of the draft content
-    $draft_model = Craft::$app->getEntryRevisions()->getDraftById($context['draftId']);
+    $draft_model = Craft::$app->getEntryRevisions()->getDraftById($context['draftId']); //deprecated
+    // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
+
     $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
 
     // reset template mode to 'control panel'
