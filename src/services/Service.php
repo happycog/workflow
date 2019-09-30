@@ -107,7 +107,8 @@ class Service extends Component
         $subSQL = $submissionsQuery->getRawSql();
       }
       $has_existing_drafts = FALSE;
-      $existing_drafts = Craft::$app->entryRevisions->getDraftsByEntryId($context['entry']->id);
+      // $existing_drafts = Craft::$app->entryRevisions->getDraftsByEntryId($context['entry']->id); // Deprecated
+      $existing_drafts = Entry::find()->drafts()->id($context['entry']->id)->all();
       if (!empty($existing_drafts)) {
         $has_existing_drafts = TRUE;
       }
@@ -140,6 +141,7 @@ class Service extends Component
 
           ,'wfsettings' => $settings
           ,'subSQL' => $subSQL
+          ,'sectionSiteSettings' => $sectionSiteSettings
       ));
   }
 
@@ -207,14 +209,14 @@ class Service extends Component
         $view = Craft::$app->getView();
 
         if (!isset($sectionSiteSettings[$entry->siteId]) || !$sectionSiteSettings[$entry->siteId]->hasUrls) {
-          Craft::$app->setTemplateMode($templateMode);
+          $view->setTemplateMode($templateMode);
             throw new ServerErrorHttpException('The entry ' . $entry->id . ' doesn’t have a URL for the site ' . $entry->siteId . '.');
         }
 
         $site = Craft::$app->getSites()->getSiteById($entry->siteId);
 
         if (!$site) {
-          Craft::$app->setTemplateMode($templateMode);
+          $view->setTemplateMode($templateMode);
             throw new ServerErrorHttpException('Invalid site ID: ' . $entry->siteId);
         }
 

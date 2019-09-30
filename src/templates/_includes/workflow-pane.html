@@ -211,6 +211,8 @@ Provides a sidebar pane for the entry edit page
   <div id="input1" style="display:none;">{{ diff['live']|striptags|trim }}</div>
   <div id="input2" style="display:none;">{{ diff['draft']|striptags|trim }}</div>
   <div id="outputdiv"></div>
+  {% else %}
+  <div>NO DIFF AVAILABLE</div>
 {% endif %}
 </div>
 
@@ -306,6 +308,8 @@ Entry Section/Type: {{ context.entry.section.handle }} / {{ context.entry.type.h
 {# Entry ID: {{ context.entry.id }} <br> #}
 {# Allow Save: {{ allowSave }} <br> #}
 {# permissionSuffix: {{ permissionSuffix }} <br> #}
-{# Draft ID: {{ context.entry.draftId }} <br> #}
+Draft ID: {{ context.entry.draftId }} <br>
 {# Settings: <pre>{{ wfsettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+sectionSiteSettings: <pre>{{ sectionSiteSettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 {# SQL: <pre>{{ subSQL }}</pre> #}
+hasExistingDrafts: {{ hasExistingDrafts ? 'Yes' : 'No' }} <br>
