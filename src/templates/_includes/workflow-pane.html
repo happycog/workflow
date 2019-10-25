@@ -210,7 +210,10 @@ Provides a sidebar pane for the entry edit page
   <button onClick="launch(); return false;" value="diff">Diff the text of this version with the published version</button>
   <div id="input1" style="display:none;">{{ diff['live']|striptags|trim }}</div>
   <div id="input2" style="display:none;">{{ diff['draft']|striptags|trim }}</div>
-  <div id="outputdiv"></div>
+  <div class="output-wrapper hide">
+    <div class="hide-button" onClick="hideOutput(); return false;" >X</div>
+    <div id="outputdiv"></div>
+  </div>
   {% else %}
   <div>NO DIFF AVAILABLE</div>
 {% endif %}
@@ -255,8 +258,8 @@ Provides a sidebar pane for the entry edit page
     text1 = text1.replace(/\n\s*\n/g, '\n');
     text2 = text2.replace(/\n\s*\n/g, '\n');
 
-    console.log('text1', text1);
-    console.log('text2', text2);
+    //console.log('text1', text1);
+    //console.log('text2', text2);
 
     dmp.Diff_Timeout = 10;
     dmp.Diff_EditCost = 4;
@@ -270,7 +273,13 @@ Provides a sidebar pane for the entry edit page
     dmp.diff_cleanupSemantic(d);
     var ds = dmp.diff_prettyHtml(d);
     document.getElementById('outputdiv').innerHTML = ds;
+    document.querySelector('.output-wrapper').classList.remove('hide');
   }
+
+  function hideOutput(){
+    document.querySelector('.output-wrapper').classList.add('hide');
+  }
+
 {% endset %}
 {% includeJs iFramejs first %}
 {% endif %}{# END diff script #}
@@ -308,8 +317,8 @@ Entry Section/Type: {{ context.entry.section.handle }} / {{ context.entry.type.h
 {# Entry ID: {{ context.entry.id }} <br> #}
 {# Allow Save: {{ allowSave }} <br> #}
 {# permissionSuffix: {{ permissionSuffix }} <br> #}
-Draft ID: {{ context.entry.draftId }} <br>
+{# Draft ID: {{ context.entry.draftId }} <br> #}
 {# Settings: <pre>{{ wfsettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
-sectionSiteSettings: <pre>{{ sectionSiteSettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+{# sectionSiteSettings: <pre>{{ sectionSiteSettings|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
 {# SQL: <pre>{{ subSQL }}</pre> #}
-hasExistingDrafts: {{ hasExistingDrafts ? 'Yes' : 'No' }} <br>
+{# hasExistingDrafts: {{ hasExistingDrafts ? 'Yes' : 'No' }} <br> #}

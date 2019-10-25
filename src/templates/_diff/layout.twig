@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    Title: {{ entry.title }}
+    
+    {# loop through the fields in the entries fieldLayout Model #}
+    {% for fieldLayoutField in entry.getFieldLayout().getFields() %}
+
+      {# get the field Model from the fieldId #}
+      {% set field = craft.fields.getFieldById(fieldLayoutField.id) %}
+
+      {# print the field handle and the field content  #}
+      {% set handle = field.handle %}
+      {% set type = className(field) %}
+      {% if entry.fieldValues[handle]|default(null) %}
+        {% switch className(field) %}
+          {% case 'craft\\fields\\PlainText' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] }}
+          {% case 'craft\\redactor\\Field' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] }}
+          {% case 'craft\\fields\\Assets' %}
+            {{ field.name }}: {% for img in entry.fieldValues[handle] %}{{ img.filename }} {% endfor %}
+          {% case 'craft\\fields\\Lightswitch' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] ? 'True' : 'False'  }}
+          {% case 'craft\\fields\\Entries' %}
+            {{ field.name }}: {% for rel in entry.fieldValues[handle] %}{{ rel.title }} {% endfor %}
+          {% case 'craft\\fields\\Dropdown' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] }}
+          {% case 'rias\\positionfieldtype\\fields\\Position' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] }}
+          {% case 'craft\\fields\\Checkboxes' %}
+            {{ field.name }}: {{ entry.fieldValues[handle].options|filter(v => v.selected)|map(o => o.label)|join(', ') }}
+          {% case 'craft\\fields\\Matrix' %}
+            Matrix: {{ handle }} 
+              {% include 'lynnworkflow/_diff/matrix' with {'blocks': entry.fieldValues[handle].all()} %}
+            
+          {% case 'nystudio107\\seomatic\\fields\\SeoSettings' %}
+            {# Do nothing #}
+          {% default %}
+            {{ handle }}: {{ type }}
+        {% endswitch %}
+      {% endif %}
+
+    {% endfor %}
+    
+  </body>
+</html>

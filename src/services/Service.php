@@ -165,7 +165,7 @@ class Service extends Component
     // temporarily set rendering mode to 'site'
     $view = Craft::$app->getView();
     $templateMode = $view->getTemplateMode();
-    $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
+    // $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
 
     // render a copy of the live content
     $live_model = Craft::$app->entries->getEntryById($context['entryId']);
@@ -234,16 +234,16 @@ class Service extends Component
         $view->getTwig()->disableStrictVariables();
         // return 'template entry';
 
-        $rendered = $view->renderTemplate($sectionSiteSettings[$entry->siteId]->template, [
+        // $rendered = $view->renderTemplate($sectionSiteSettings[$entry->siteId]->template, [
+        $rendered = $view->renderTemplate('lynnworkflow/_diff/layout', [
             'entry' => $entry,
             'forDiff' => TRUE
         ]);
 
         // Now manipulate the result to strip everything outside of
         // <main id="content" role="main"> </main>
-        $rendered = strstr($rendered, '<main id="content" role="main">');
-        $rendered = strstr($rendered, '</main>', TRUE);
-        $rendered = preg_replace('#(<br */?>\s*)+#i', '<br />', $rendered);
+        // $rendered = strstr($rendered, '<main id="page-maincontent">');
+        // $rendered = strstr($rendered, '</main>', TRUE);
         return $rendered;
     }
 

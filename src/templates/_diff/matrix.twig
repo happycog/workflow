@@ -1,0 +1,37 @@
+{% for block in blocks %}
+  BLOCK: {{ block.type }}
+  {% for blockField in block.getFieldLayout().getFields() %}
+    {% set field = craft.fields.getFieldById(blockField.id) %}
+
+    {# print the field handle and the field content  #}
+    {% set handle = field.handle %}
+    {% set type = className(field) %}
+    {% switch className(field) %}
+      {% case 'craft\\fields\\PlainText' %}
+        - {{ field.name }}: {{ block.fieldValues[field.handle] }}
+      {% case 'craft\\redactor\\Field' %}
+        - {{ field.name }}: {{ block.fieldValues[handle] }}
+      {% case 'craft\\fields\\Assets' %}
+        - {{ field.name }}: {% for img in block.fieldValues[handle] %}{{ img.filename }} {% endfor %}
+      {% case 'craft\\fields\\Lightswitch' %}
+        - {{ field.name }}: {{ block.fieldValues[handle] ? 'True' : 'False'  }}
+      {% case 'craft\\fields\\Entries' %}
+        - {{ field.name }}: {% for rel in block.fieldValues[handle] %}{{ rel.title }} {% endfor %}
+      {% case 'craft\\fields\\Dropdown' %}
+        - {{ field.name }}: {{ block.fieldValues[handle] }}
+      {% case 'rias\\positionfieldtype\\fields\\Position' %}
+        - {{ field.name }}: {{ block.fieldValues[handle] }}
+      {% case 'craft\\fields\\Checkboxes' %}
+        {# filter options for selected items | return array of labels | join as comma-separated string #}
+        {{ field.name }}: {{ block.fieldValues[handle].options|filter(v => v.selected)|map(o => o.label)|join(', ') }}
+      {% case 'craft\\fields\\Matrix' %}
+        Matrix: {{ field.name }} {% include 'lynnworkflow/_diff/matrix' with {'blocks': block.fieldValues[handle].all()} %}
+        
+      {% case 'nystudio107\\seomatic\\fields\\SeoSettings' %}
+        {# Do nothing #}
+      {% default %}
+        - {{ handle }}: {{ type }}
+    {% endswitch %}  
+  {% endfor %}
+  .
+{% endfor %}
