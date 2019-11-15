@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    {% block head %}
+    <title>Diff for: {{ title }}</title>
+    {% endblock %}
+    <style>
+    .diff-block{
+      max-width: 900px;
+      margin: 1rem auto;
+    }
+    </style>
+  </head>
+  <body>
+    {{ beginBody() }} {# js from AssetBundle #}
+    <div class="diff-block">
+      <h1>Diff for <i>{{ title }}</i></h1>
+      <p>Comparing entry: {{ entryId }} with draft {{ draftId }}. Reload page if draft has changed.</p>
+      {% if diff is defined and diff is not empty %}
+        <div id="input1" style="display:none;">{{ diff['live']|striptags|trim }}</div>
+        <div id="input2" style="display:none;">{{ diff['draft']|striptags|trim }}</div>
+        <div id="outputdiv"></div>
+        {% else %}
+        <div>NO DIFF AVAILABLE</div>
+      {% endif %}
+    </div>
+    {% do view.registerAssetBundle('therefinery\\lynnworkflow\\assetbundles\\LynnWorkflowAsset') %}
+
+
+    {% if diff is defined and diff is not empty %}{# START diff script #}
+{% set iFramejs %}
+  var dmp;
+  document.addEventListener('DOMContentLoaded', function() {
+    diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
+      var html = [];
+      var pattern_amp = /&/g;
+      var pattern_lt = /</g;
+      var pattern_gt = />/g;
+      var pattern_para = /\n/g;
+      for (var x = 0; x < diffs.length; x++) {
+        var op = diffs[x][0];    // Operation (insert, delete, equal)
+        var data = diffs[x][1];  // Text of change.
+        var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
+            .replace(pattern_gt, '&gt;').replace(pattern_para, '<br>');
+        switch (op) {
+          case DIFF_INSERT:
+            html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
+            break;
+          case DIFF_DELETE:
+            html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
+            break;
+          case DIFF_EQUAL:
+            html[x] = '<span>' + text + '</span>';
+            break;
+        }
+      }
+      return html.join('');
+    };
+    dmp = new diff_match_patch();
+  });
+  
+
+  function launch() {
+    var text1 = document.getElementById('input1').innerHTML;
+    var text2 = document.getElementById('input2').innerHTML;
+    text1 = text1.replace(/\n\s*\n/g, '\n');
+    text2 = text2.replace(/\n\s*\n/g, '\n');
+
+    //console.log('text1', text1);
+    //console.log('text2', text2);
+
+    dmp.Diff_Timeout = 10;
+    dmp.Diff_EditCost = 4;
+
+    //var ms_start = (new Date()).getTime();
+    var d = dmp.diff_main(text1, text2);
+    //var ms_end = (new Date()).getTime();
+
+    console.log('diff', d);
+
+    dmp.diff_cleanupSemantic(d);
+    var ds = dmp.diff_prettyHtml(d);
+    document.getElementById('outputdiv').innerHTML = ds;
+  }
+  function ready(fn) {
+    if (document.readyState != 'loading'){
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  ready(launch);
+
+
+{% endset %}
+{% includeJs iFramejs first %}
+{% endif %}{# END diff script #}
+  {{ endBody() }} {# js from AssetBundle #}
+  </body>
+</html>

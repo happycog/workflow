@@ -5,7 +5,7 @@
     { label: "Lynn Workflow" | t, url: url('lynnworkflow') }
 ] %}
 
-{% set selectedTab = 'lynnworkflow/workflows' %}
+{% set selectedTab = 'lynnworkflow' %}
 {% set showStatusMenu = true %}
 {% set title = 'Lynn Workflow' %}
 
@@ -13,7 +13,7 @@
 yo!
 {% endblock %}
 
-{% set workflows = craft.lynnWorkflow.getAllWorkflows %}
+{% set workflows = craft.lynnworkflow.getAllWorkflows %}
 
 {% block content %}
 

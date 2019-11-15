@@ -221,6 +221,7 @@ class LynnWorkflow extends Plugin
                   'Workflows' => ['label' => 'Workflows', 'url' => UrlHelper::url('lynnworkflow/workflows')],
                   'drafts' => ['label' => 'Drafts', 'url' => UrlHelper::url('lynnworkflow/drafts')],
                   'settings' => ['label' => 'Settings', 'url' => UrlHelper::url('lynnworkflow/settings')],
+                  // 'transitions' => ['label' => 'Transitions', 'url' => UrlHelper::url('lynnworkflow/transitions')],
                 ];
               }else{
                 // regular user tabs
@@ -248,7 +249,9 @@ class LynnWorkflow extends Plugin
           'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/edit' => 'lynnworkflow/states/edit',
           'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/new' => 'lynnworkflow/transitions/edit',
           'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>' => 'lynnworkflow/transitions/show',
-          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>/edit' => 'lynnworkflow/transitions/edit'
+          'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>/edit' => 'lynnworkflow/transitions/edit',
+          'lynnworkflow/submissions/diff/<entryId:\d+>/<draftId:\d+>' => 'lynnworkflow/submissions/diff',
+          'lynnworkflow/submissions/sidebar/<entryId:\d+>/<draftId:\d+>' => 'lynnworkflow/submissions/sidebar'
         ];
 
         $event->rules = array_merge($event->rules, $rules);

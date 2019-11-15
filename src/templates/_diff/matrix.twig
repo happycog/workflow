@@ -26,7 +26,21 @@
         {{ field.name }}: {{ block.fieldValues[handle].options|filter(v => v.selected)|map(o => o.label)|join(', ') }}
       {% case 'craft\\fields\\Matrix' %}
         Matrix: {{ field.name }} {% include 'lynnworkflow/_diff/matrix' with {'blocks': block.fieldValues[handle].all()} %}
+      {% case 'benf\\neo\\Field' %}
+        Matrix: {{ field.name }} {% include 'lynnworkflow/_diff/matrix' with {'blocks': block.fieldValues[handle].all()} %}
         
+      {% case 'therefinery\\relatedentriesautomation\\fields\\RelatedentriesautomationField' %}
+        {% set obj = block.fieldValues[handle] %}
+        - {{ field.name }}: 
+        - - Limit: {{ obj.limit }}
+        - - Order: {{ obj.order }} {{ obj.orderDir }}
+        - - entryTypes: 
+        {% for qtype in obj.entryTypes %}
+        - - - {{ qtype.name }}: 
+          {% for param in qtype.params %}
+        - - - - {{ param.handle }} {{ param.operator }} {{ param.value }}
+          {% endfor %}
+        {% endfor %}
       {% case 'nystudio107\\seomatic\\fields\\SeoSettings' %}
         {# Do nothing #}
       {% default %}

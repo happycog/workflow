@@ -10,6 +10,8 @@ use craft\web\Controller;
 use craft\helpers\DateTimeHelper;
 use DateTime;
 use therefinery\lynnworkflow\LynnWorkflow;
+use therefinery\lynnworkflow\assetbundles\LynnWorkflowAsset;
+
 
 class SubmissionsController extends Controller
 {
@@ -152,6 +154,141 @@ class SubmissionsController extends Controller
 
         // Redirect page to the entry as its not a form submission
         return $this->redirect($request->referrer);
+    }
+
+    /**
+     * An AJAX loadable sidebar that should appear after an Entry is "Save As Draft"
+     * @param  INT $entryId 
+     * @param  INT $draftId 
+     * @return String          Rendered Sidebar
+     */
+    public function actionSidebar($entryId = NULL, $draftId = NULL){
+        // $this->requireAdmin();
+        $this->requireLogin();
+
+        $context = array();
+        $context['entry'] = Craft::$app->entries->getEntryById($entryId);
+        $context['entryId'] = $entryId;
+        $context['draftId'] = $draftId;
+        $context['section'] = $context['entry']->section;
+        $context['ajax'] = true;
+
+        $sidebar = LynnWorkflow::getInstance()->service->renderEntrySidebar($context);
+
+        return $sidebar;
+    }
+
+    /**
+     * Present a plain webpage showing a diff between a draft and the publishe entry
+     * @param  Int $entryId An entry ID
+     * @param  INT $draftId A draft ID
+     * @return String          The rendered template for a diff page
+     */
+    public function actionDiff($entryId = NULL, $draftId = NULL)
+    {
+        $pageInfo = Craft::$app->entries->getEntryById($entryId);
+
+        $this->view->registerAssetBundle(LynnWorkflowAsset::class);
+
+        return $this->view->renderPageTemplate('lynnworkflow/_diff/display', array(
+            'entryId' => $entryId,
+            'draftId' => $draftId,
+            'diff' => $this->prepareForDiff($entryId, $draftId),
+            'title' => $pageInfo->title
+        ));
+    }
+
+    // actionDiff helper methods
+    // 
+    public function prepareForDiff($entryId = NULL, $draftId = NULL){
+        $diff = array(
+          'live' => 'Current Content\nSecond Line',
+          'draft' => 'Draft Content\nSecond Line'
+        );
+
+        // temporarily set rendering mode to 'site'
+        $view = Craft::$app->getView();
+        $templateMode = $view->getTemplateMode();
+        // $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
+
+        // render a copy of the live content
+        $live_model = Craft::$app->entries->getEntryById($entryId);
+        $section = $live_model->getSection();
+        $type = $live_model->getType();
+        if (!$section || !$type) {
+          // we need to have a section to render the content
+          Craft::log('Attempting to preview an entry that doesn’t have a section/type', LogLevel::Error);
+          throw new HttpException(404);
+        }
+
+        $diff['siteId'] = $live_model->siteId;
+        $diff['section'] = $live_model->getSection()->getSiteSettings()[1]->siteId;
+        $diff['template'] = $live_model->getSection()->getSiteSettings()[1]->template;
+
+        $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
+
+        // render a copy of the draft content
+        $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
+        // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
+
+        $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
+
+        // reset template mode to 'control panel'
+        $view->setTemplateMode($templateMode);
+
+        return $diff;
+    }
+
+  /**
+   * Based on EntryController::_showEntry a private function used by CraftCMS to render previews.
+   * Function has been copied and modified to provide a rendering of a live or draft entry for
+   * purposes of performing a diff.
+   * @param  Object $entry        An entry or draft mobel
+   * @param  String $templateMode Template mode to fall-back to in case of error, usually CP
+   * @return String               The contents of the rendered page, striped of header and footer
+   */
+  private function _templateEntry($entry, $templateMode)
+    {
+        $sectionSiteSettings = $entry->getSection()->getSiteSettings();
+        $view = Craft::$app->getView();
+
+        if (!isset($sectionSiteSettings[$entry->siteId]) || !$sectionSiteSettings[$entry->siteId]->hasUrls) {
+          $view->setTemplateMode($templateMode);
+            throw new ServerErrorHttpException('The entry ' . $entry->id . ' doesn’t have a URL for the site ' . $entry->siteId . '.');
+        }
+
+        $site = Craft::$app->getSites()->getSiteById($entry->siteId);
+
+        if (!$site) {
+          $view->setTemplateMode($templateMode);
+            throw new ServerErrorHttpException('Invalid site ID: ' . $entry->siteId);
+        }
+
+        Craft::$app->language = $site->language;
+        Craft::$app->set('locale', Craft::$app->getI18n()->getLocaleById($site->language));
+
+        if (!$entry->postDate) {
+            $entry->postDate = new \DateTime();
+        }
+
+        // Have this entry override any freshly queried entries with the same ID/site ID
+        // Craft::$app->getElements()->setPlaceholderElement($entry);
+        // JO: Disabled due to weird side effects
+
+        $view->getTwig()->disableStrictVariables();
+        // return 'template entry';
+
+        // $rendered = $view->renderTemplate($sectionSiteSettings[$entry->siteId]->template, [
+        $rendered = $view->renderTemplate('lynnworkflow/_diff/layout', [
+            'entry' => $entry,
+            'forDiff' => TRUE
+        ]);
+
+        // Now manipulate the result to strip everything outside of
+        // <main id="content" role="main"> </main>
+        // $rendered = strstr($rendered, '<main id="page-maincontent">');
+        // $rendered = strstr($rendered, '</main>', TRUE);
+        return $rendered;
     }
 
 

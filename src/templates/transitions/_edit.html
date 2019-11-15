@@ -120,16 +120,22 @@
             required: true,
         }) }}
 
-        <br /><br />
+        <div class="field">
+            <div class="heading">
+                <label id="notificationText-label" for="notificationText">Notification Text</label>
+                <div class="instructions">
+                    <p>Enter the text of the notification that will be sent for this transition.<br> Available tokens are {% verbatim %}{{ submission.title }}, {{ submission.author }}, {{ submission.transitionName }}, {{ submission.currentState }}, {{ submission.targetState }} and {{ submission.cpEditUrl }}{% endverbatim %}.</p>
+                </div>
+            </div>
         {{
           forms.textArea({
-            placeholder: 'Enter the text of the notification that will be sent for this transition. Available tokens are {{ submission.title }}, {{ submission.author }}, {{ submission.transitionName }}, {{ submission.currentState }} and {{ submission.targetState }}.' | t,
             required: true,
             name: 'transition[notificationText]',
             value: transition ? transition.notificationText : null,
             errors: transition ? transition.errors('notificationText') : null,
           })
         }}
+        </div>
 
         {{ forms.selectField({
           label: 'Target state' | t,

@@ -36,6 +36,11 @@
           {% case 'craft\\fields\\Matrix' %}
             Matrix: {{ handle }} 
               {% include 'lynnworkflow/_diff/matrix' with {'blocks': entry.fieldValues[handle].all()} %}
+          {% case 'benf\\neo\\Field' %}
+            Matrix: {{ handle }} 
+              {% include 'lynnworkflow/_diff/matrix' with {'blocks': entry.fieldValues[handle].all()} %}          
+          {% case 'therefinery\\relatedentriesautomation\\fields\\RelatedentriesautomationField' %}
+            {{ field.name }}: {{ entry.fieldValues[handle] }}
             
           {% case 'nystudio107\\seomatic\\fields\\SeoSettings' %}
             {# Do nothing #}

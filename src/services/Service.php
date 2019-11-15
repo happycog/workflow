@@ -75,6 +75,27 @@ class Service extends Component
             // Now we can render it.
             return $this->_renderEntrySidebarPanel($context, $enabled_workflow, $currentUser);
           }
+        }else if(isset($context['ajax'])){
+          $entry = $context['entry'];
+          // First, determine if this entry is using a workflow.
+          // JO: enabledWorkflows are sections & section-types that
+          $enabled_workflows = $settings->enabledWorkflows;
+          $section_id = $entry->sectionId;
+          $type_id = $entry->typeId;
+          // See if an entry exists for the sectionId-typeId.
+          // JO: workflow can be assigned to a specific entry type, or all types in a section. Plugin tests for the type first
+          if (!empty($enabled_workflows[$section_id . '-' . $type_id])) {
+            $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id . '-' . $type_id], Workflow::class);
+          }
+          else if (!empty($enabled_workflows[$section_id])) {
+            $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id], Workflow::class);
+          }
+          else {
+            // No matched settings, don't display it.
+            return false;
+          }
+          // Now we can render it.
+          return $this->_renderEntrySidebarPanel($context, $enabled_workflow, $currentUser);
         }
     }
 
@@ -121,10 +142,10 @@ class Service extends Component
 
       // Check if entry type has an URL, which is required to produce a diff
       $entry = $context['entry'];
-      $sectionSiteSettings = $entry->getSection()->getSiteSettings();
-      if ($has_existing_drafts && isset($context['draftId']) && isset($sectionSiteSettings[$entry->siteId]) && $sectionSiteSettings[$entry->siteId]->hasUrls) {
-        $diff = $this->prepareForDiff($context);
-      }
+      // $sectionSiteSettings = $entry->getSection()->getSiteSettings();
+      // if ($has_existing_drafts && isset($context['draftId']) && isset($sectionSiteSettings[$entry->siteId]) && $sectionSiteSettings[$entry->siteId]->hasUrls) {
+      //   $diff = $this->prepareForDiff($context);
+      // }
       
 
       return Craft::$app->view->renderTemplate('lynnworkflow/_includes/workflow-pane', array(
@@ -137,14 +158,18 @@ class Service extends Component
           'enabledWorkflow' => $enabled_workflow,
           'currentUser' => $user,
           'hasExistingDrafts' => $has_existing_drafts,
-          'diff' => $diff
+          // 'diff' => $diff,
+          'orgEntryId' => $context['entryId']
 
           ,'wfsettings' => $settings
           ,'subSQL' => $subSQL
-          ,'sectionSiteSettings' => $sectionSiteSettings
+          // ,'sectionSiteSettings' => $sectionSiteSettings
       ));
   }
 
+  /**
+   * The following two functions have been moved to `SubmissionsConrtoller` and can be removed.
+   */
   /**
    * Prepares an entry's live and draft content to be passed to a diffing function
    * 

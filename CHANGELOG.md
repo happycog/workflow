@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.2 - 2019-11-15
+### Added
+- Added variable `{{ submission.cpEditUrl }}` to notifications field. Site admin will have to update the 'Notification Text' for each transition.
+- Added instructions for transition notification fields listing available variables
+- Added 'lynnworkflow_pane.js' to hold all client-side code for workflow pane on editor pages. Has code that monkeypatches history API to add an `locationchange` event that is triggered when the CP Editor updates the URL without reloading the page.
+- New action for SubmissionsController `actionDiff` provides a full page diff. Link that opens it appears in sidebar pane if view is a draft
+- New action `actionSidebar` for SubmissionsController provides a means to load a LynnWorkflow sidebar in the editor via AJAX when a new draft is created
+
 ## v1.1.1 - 2019-10-25
 ### Changed
 - Diffs: replaced site-side templates with minimal templates to improve rendering time. Empty fields are not shown.

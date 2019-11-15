@@ -125,6 +125,7 @@ class BaseController extends Controller
               'current_state_name' => $current_state_name,
               'target_state_name' => $target_state_name,
               'notes' => $notes,
+              'cpEditUrl' => $draft->cpEditUrl
             );
             $this->sendNotification($email_config);
             $session->setNotice(Craft::t('lynnworkflow', 'Entry transitioned successfully.'));
@@ -152,6 +153,7 @@ class BaseController extends Controller
       $current_state_name = $config['current_state_name'];
       $target_state_name = $config['target_state_name'];
       $notes = $config['notes'];
+      $cpEditUrl = $config['cpEditUrl'];
       // Handle email (this should go below)
       $recipients = array();
       // First get the group recipients.
@@ -207,6 +209,7 @@ class BaseController extends Controller
             'transitionName' => $current_transition_name,
             'currentState' => $current_state_name,
             'targetState' => $target_state_name,
+            'cpEditUrl' => $cpEditUrl
           ),
         );
         $view = Craft::$app->getView();
