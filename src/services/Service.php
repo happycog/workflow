@@ -113,7 +113,7 @@ class Service extends Component
       // See if there's an existing submission
       $submissions = array();
       $subSQL = '';
-      $draftId = (isset($context['draftId'])) ? $context['draftId'] : false;
+      $draftId = (isset($context['draftId'])) ? $context['draftId'] : $context['entry']->draftId;
       if (!empty($context['versionId'])) {
         $submissions = Submission::find() // JO: uses lynnworkflow\elements\db\SubmissionQuery
           // ->ownerId($context['entry']->id) // which user should this be? the creater of the draft?
@@ -158,11 +158,12 @@ class Service extends Component
           'enabledWorkflow' => $enabled_workflow,
           'currentUser' => $user,
           'hasExistingDrafts' => $has_existing_drafts,
-          // 'diff' => $diff,
-          'orgEntryId' => $context['entryId']
+          'orgEntryId' => $context['entryId'],
+          'draftId' => $draftId,
+          'ajax' => isset($context['ajax']) ? $context['ajax'] : false,
 
-          ,'wfsettings' => $settings
-          ,'subSQL' => $subSQL
+          // ,'wfsettings' => $settings
+          // ,'subSQL' => $subSQL
           // ,'sectionSiteSettings' => $sectionSiteSettings
       ));
   }

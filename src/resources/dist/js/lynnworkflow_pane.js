@@ -30,14 +30,14 @@ window.addEventListener('locationchange', function(){
   draftState(true);
 });
 
-function draftState(chagned){
+function draftState(changed){
   /* `currentId` is a global that should have been set in 'workflow-pane.html' */
   var urlParams = new URLSearchParams(window.location.search);
 
   console.log('is draft: ' + urlParams.has('draftId'));
   if(urlParams.has('draftId')){
     $('#workflow-widget').show();
-    if(chagned && currentId){
+    if(changed && currentId){
       // load external sidebar pane (need entryId and draftId)
       $("#workflow-pane").load("/lynnedu_admin/lynnworkflow/submissions/sidebar/" + currentId + "/" + urlParams.get("draftId"));
     }

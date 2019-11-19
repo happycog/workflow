@@ -15,7 +15,7 @@ Provides a sidebar pane for the entry edit page
 {% endset %}
 {% includeJs jsvars first %}
 
-{% if ajax is not defined %}
+{% if not ajax %}
 <div class="pane workflow-pane" id="workflow-pane">
 {% endif %}
 
@@ -216,9 +216,9 @@ Provides a sidebar pane for the entry edit page
   {% endif %}
 {% endfor %}
   <div id="workflow-widget">
-    <a href="/lynnedu_admin/lynnworkflow/submissions/diff/{{ orgEntryId }}/{{ context.entry.draftId }}" class="btn" target="_blank">View Diff</a>
+    <a href="/lynnedu_admin/lynnworkflow/submissions/diff/{{ orgEntryId }}/{{ draftId }}" class="btn" target="_blank">View Diff</a>
   </div>
-{% if ajax is not defined %}</div>{% endif %}
+{% if not ajax %}</div>{% endif %}
 
 
 
