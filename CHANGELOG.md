@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.5 - 2019-11-20
+### Fixed
+- Diff page conflict with Guide plugin. Found another spot in code where `entryId` was triggering Guide.
+
 ## v1.1.4 - 2019-11-20
 ### Fixed
 - Diff page conflict with Guide plugin. Guide tries to alter pages that contain a `entryId` variable and add a Guide widget. Renamed variable to `diffEntryId`

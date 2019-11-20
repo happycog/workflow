@@ -184,16 +184,16 @@ class SubmissionsController extends Controller
      * @param  INT $draftId A draft ID
      * @return String          The rendered template for a diff page
      */
-    public function actionDiff($entryId = NULL, $draftId = NULL)
+    public function actionDiff($diffEntryId = NULL, $draftId = NULL)
     {
-        $pageInfo = Craft::$app->entries->getEntryById($entryId);
+        $pageInfo = Craft::$app->entries->getEntryById($diffEntryId);
 
         $this->view->registerAssetBundle(LynnWorkflowAsset::class);
 
         return $this->view->renderPageTemplate('lynnworkflow/_diff/display', array(
-            'diffEntryId' => $entryId,
+            'diffEntryId' => $diffEntryId,
             'diffDraftId' => $draftId,
-            'diff' => $this->prepareForDiff($entryId, $draftId),
+            'diff' => $this->prepareForDiff($diffEntryId, $draftId),
             'title' => $pageInfo->title
         ));
     }
@@ -225,13 +225,13 @@ class SubmissionsController extends Controller
         $diff['section'] = $live_model->getSection()->getSiteSettings()[1]->siteId;
         $diff['template'] = $live_model->getSection()->getSiteSettings()[1]->template;
 
-        $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
+        // $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
 
         // render a copy of the draft content
         $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
         // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
 
-        $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
+        // $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
 
         // reset template mode to 'control panel'
         $view->setTemplateMode($templateMode);
