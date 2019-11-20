@@ -15,7 +15,7 @@
     {{ beginBody() }} {# js from AssetBundle #}
     <div class="diff-block">
       <h1>Diff for <i>{{ title }}</i></h1>
-      <p>Comparing entry: {{ entryId }} with draft {{ draftId }}. Reload page if draft has changed.</p>
+      <p>Comparing entry: {{ diffEntryId }} with draft {{ diffDraftId }}. Reload page if draft has changed.</p>
       {% if diff is defined and diff is not empty %}
         <div id="input1" style="display:none;">{{ diff['live']|striptags|trim }}</div>
         <div id="input2" style="display:none;">{{ diff['draft']|striptags|trim }}</div>

@@ -191,8 +191,8 @@ class SubmissionsController extends Controller
         $this->view->registerAssetBundle(LynnWorkflowAsset::class);
 
         return $this->view->renderPageTemplate('lynnworkflow/_diff/display', array(
-            'entryId' => $entryId,
-            'draftId' => $draftId,
+            'diffEntryId' => $entryId,
+            'diffDraftId' => $draftId,
             'diff' => $this->prepareForDiff($entryId, $draftId),
             'title' => $pageInfo->title
         ));
