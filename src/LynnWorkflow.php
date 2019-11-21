@@ -251,7 +251,7 @@ class LynnWorkflow extends Plugin
           'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>' => 'lynnworkflow/transitions/show',
           'lynnworkflow/workflows/<workflowId:\d+>/states/<stateId:\d+>/transitions/<transitionId:\d+>/edit' => 'lynnworkflow/transitions/edit',
           'lynnworkflow/submissions/diff/<diffEntryId:\d+>/<draftId:\d+>' => 'lynnworkflow/submissions/diff',
-          'lynnworkflow/submissions/sidebar/<entryId:\d+>/<draftId:\d+>' => 'lynnworkflow/submissions/sidebar'
+          'lynnworkflow/submissions/sidebar/<sbEntryId:\d+>/<sbEdraftId:\d+>' => 'lynnworkflow/submissions/sidebar'
         ];
 
         $event->rules = array_merge($event->rules, $rules);

@@ -162,14 +162,14 @@ class SubmissionsController extends Controller
      * @param  INT $draftId 
      * @return String          Rendered Sidebar
      */
-    public function actionSidebar($entryId = NULL, $draftId = NULL){
+    public function actionSidebar($sbEntryId = NULL, $sbEdraftId = NULL){
         // $this->requireAdmin();
         $this->requireLogin();
 
         $context = array();
-        $context['entry'] = Craft::$app->entries->getEntryById($entryId);
-        $context['entryId'] = $entryId;
-        $context['draftId'] = $draftId;
+        $context['entry'] = Craft::$app->entries->getEntryById($sbEntryId);
+        $context['entryId'] = $sbEntryId;
+        $context['draftId'] = $sbEdraftId;
         $context['section'] = $context['entry']->section;
         $context['ajax'] = true;
 
@@ -225,13 +225,13 @@ class SubmissionsController extends Controller
         $diff['section'] = $live_model->getSection()->getSiteSettings()[1]->siteId;
         $diff['template'] = $live_model->getSection()->getSiteSettings()[1]->template;
 
-        // $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
+        $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
 
         // render a copy of the draft content
         $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
         // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
 
-        // $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
+        $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
 
         // reset template mode to 'control panel'
         $view->setTemplateMode($templateMode);

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.6 - 2019-11-21
+### Fixed
+- Typo: code comments that prevented diffs from appearing
+
 ## v1.1.5 - 2019-11-20
 ### Fixed
 - Diff page conflict with Guide plugin. Found another spot in code where `entryId` was triggering Guide.
