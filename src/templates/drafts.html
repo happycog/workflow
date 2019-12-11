@@ -31,7 +31,7 @@
                             {% set url = segments | without(segments | last) | join('/') %}
                         {% endif %}
 
-                        <a href="{{ url }}/drafts/{{ entry.draftId }}">{{ entry.title }}</a>
+                        <a href="{{ url }}/drafts/{{ entry.draftId }}">{{ entry.title|default('title not found') }}</a>
                     </th>
 
                     <td data-title="{{ 'Date created' | t('lynnworkflow') }}">

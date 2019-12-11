@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.7 - 2019-12-11
+### Fixed
+- Updated Entry queries that prevented draft (and their titles) from being loaded in Submissions page when the draft in question had some type of Unpublished status (enabled toggle off, non-current published date, etc.). Same problem affected Transitions and prevented them from sending notifications and redirecting user after post.
+
 ## v1.1.6 - 2019-11-21
 ### Fixed
 - Typo: code comments that prevented diffs from appearing

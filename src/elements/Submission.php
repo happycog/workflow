@@ -254,12 +254,14 @@ class Submission extends Element
         switch ($attribute) {
             case 'draftTitle': {
               // $draft = Craft::$app->entryRevisions->getDraftById($this->draftId); // deprecated
-              $draft = Entry::find()->draftId($this->draftId)->one(); // v3.2
+              $draft = Entry::find()->draftId($this->draftId)->anyStatus()->one(); // v3.2
               if(!$draft){
-                $title = 'Draft not found';
+                // $sql = Entry::find()->draftId($this->draftId)->anyStatus()->getRawSql();
+                $title = 'Draft not found ' . $$this->draftId;
               } else {
                 $title = $draft->title;
               }
+              // $title .= ' ' . $this->getOwner()->title; // alternate means of getting title
               $edit_url = $this->getCpEditUrl();
               // JO: temp fix for PTC entries
               if($edit_url && $draft){
