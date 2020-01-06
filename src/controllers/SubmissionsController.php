@@ -167,7 +167,7 @@ class SubmissionsController extends Controller
         $this->requireLogin();
 
         $context = array();
-        $context['entry'] = Craft::$app->entries->getEntryById($sbEntryId);
+        $context['entry'] = Craft::$app->getEntryRevisions()->getDraftById($sbEdraftId);
         $context['entryId'] = $sbEntryId;
         $context['draftId'] = $sbEdraftId;
         $context['section'] = $context['entry']->section;

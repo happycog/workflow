@@ -38,8 +38,11 @@ function draftState(changed){
   if(urlParams.has('draftId')){
     $('#workflow-widget').show();
     if(changed && currentId){
-      // load external sidebar pane (need entryId and draftId)
-      $("#workflow-pane").load("/lynnedu_admin/lynnworkflow/submissions/sidebar/" + currentId + "/" + urlParams.get("draftId"));
+      // load external sidebar pane (need entryId and draftId) then re-init Crafts UI
+      $("#workflow-pane").load("/lynnedu_admin/lynnworkflow/submissions/sidebar/" + currentId + "/" + urlParams.get("draftId"), function(){
+        console.log('Reload UI');
+        Craft.initUiElements();
+      });
     }
   }else{
     $('#workflow-widget').hide();

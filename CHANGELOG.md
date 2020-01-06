@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.8 - 2020-01-06
+### Fixed
+- AJAX sidebar loading: assured that `Craft.js` reloaded the UI so that sidebar action buttons woould be registered
+- `actionSidebar` Loaded draft entry into contect instead of current
+
 ## v1.1.7 - 2019-12-11
 ### Fixed
 - Updated Entry queries that prevented draft (and their titles) from being loaded in Submissions page when the draft in question had some type of Unpublished status (enabled toggle off, non-current published date, etc.). Same problem affected Transitions and prevented them from sending notifications and redirecting user after post.
