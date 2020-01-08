@@ -1,7 +1,7 @@
 {% for block in blocks %}
   BLOCK: {{ block.type }}
   {% for blockField in block.getFieldLayout().getFields() %}
-    {% set field = craft.fields.getFieldById(blockField.id) %}
+    {% set field = craft.app.fields.getFieldById(blockField.id) %}
 
     {# print the field handle and the field content  #}
     {% set handle = field.handle %}
@@ -12,11 +12,11 @@
       {% case 'craft\\redactor\\Field' %}
         - {{ field.name }}: {{ block.fieldValues[handle] }}
       {% case 'craft\\fields\\Assets' %}
-        - {{ field.name }}: {% for img in block.fieldValues[handle] %}{{ img.filename }} {% endfor %}
+        - {{ field.name }}: {% for img in block.fieldValues[handle].all() %}{{ img.filename }} {% endfor %}
       {% case 'craft\\fields\\Lightswitch' %}
         - {{ field.name }}: {{ block.fieldValues[handle] ? 'True' : 'False'  }}
       {% case 'craft\\fields\\Entries' %}
-        - {{ field.name }}: {% for rel in block.fieldValues[handle] %}{{ rel.title }} {% endfor %}
+        - {{ field.name }}: {% for rel in block.fieldValues[handle].all() %}{{ rel.title }} {% endfor %}
       {% case 'craft\\fields\\Dropdown' %}
         - {{ field.name }}: {{ block.fieldValues[handle] }}
       {% case 'rias\\positionfieldtype\\fields\\Position' %}

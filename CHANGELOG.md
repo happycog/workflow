@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.9 - 2020-01-08
+### Fixed
+- Updated templates to replace deprecated Craft/twig functions
+
 ## v1.1.8 - 2020-01-06
 ### Fixed
 - AJAX sidebar loading: assured that `Craft.js` reloaded the UI so that sidebar action buttons woould be registered
