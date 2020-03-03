@@ -97,7 +97,8 @@ Provides a sidebar pane for the entry edit page
           {% endfor %}
         {% endif %}
         {% if allowView == false %}
-          {% exit 403 %}
+          <p>Not allowed to edit draft state</p>
+          {# {% exit 403 %} #}
         {% endif %}
 
         {# save permissions #}
