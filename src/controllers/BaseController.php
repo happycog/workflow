@@ -55,7 +55,8 @@ class BaseController extends Controller
         $target_state_id = $state_info_arr[1];
         $workflow_id = Craft::$app->request->getParam('workflowId');
         $state_id = Craft::$app->request->getParam('stateId');
-        $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
+        // $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
+        $draft =  Entry::find()->draftId($draft_id)->anyStatus()->site('*')->one();
         $author_id = $draft->creatorId;
 
 
@@ -103,7 +104,7 @@ class BaseController extends Controller
         // Check if we're approving a draft - we publish it too.
         if ($saved && $draft_id) {
             // $draft = Craft::$app->entryRevisions->getDraftById($draft_id);
-            $draft = Entry::find()->draftId($draft_id)->anyStatus()->one(); // v3.2
+            $draft = Entry::find()->draftId($draft_id)->anyStatus()->site('*')->one(); // v3.2
         } else {
             $draft = null;
         }

@@ -36,6 +36,7 @@ class Submission extends Element
     public $editorId;
     public $publisherId;
     public $status;
+    public $siteIds;
     public $notes;
     public $dateApproved;
     public $dateRejected;
@@ -67,7 +68,16 @@ class Submission extends Element
 
     public static function isLocalized(): bool
     {
-        return false;
+        return true;
+    }
+
+    public function getSupportedSites(): array
+    {
+        // if(is_array($this->siteIds)){
+        //     return $this->siteIds;
+        // }else{
+            return parent::getSupportedSites();
+        // }
     }
 
     public static function hasStatuses(): bool
@@ -93,9 +103,20 @@ class Submission extends Element
     protected static function defineSources(string $context = null): array
     {
         $sources = [
-            '*' => [
+            [
                 'key' => '*',
                 'label' => Craft::t('lynnworkflow', 'All submissions'),
+                'criteria' => [
+                    'enabledForSite' => true,
+                ]
+            ],
+            [
+                'key' => 'review',
+                'label' => 'Ready for review',
+                'criteria' => [
+                    'stateName' => 'Review',
+                    'enabledForSite' => true,
+                ]
             ]
         ];
 
@@ -238,6 +259,7 @@ class Submission extends Element
             'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
             'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
             'stateId' => ['label' => Craft::t('lynnworkflow', 'Current State')],
+            'siteId' => ['label' => Craft::t('lynnworkflow', 'Sites')],
         ];
     }
 
@@ -253,16 +275,24 @@ class Submission extends Element
     {
         switch ($attribute) {
             case 'draftTitle': {
+                // return 'title';
+              $edit_url = $this->getCpEditUrl();
               // $draft = Craft::$app->entryRevisions->getDraftById($this->draftId); // deprecated
-              $draft = Entry::find()->draftId($this->draftId)->anyStatus()->one(); // v3.2
+              $draft = Entry::find()->draftId($this->draftId)->anyStatus()->site('*')->one(); // v3.2
               if(!$draft){
                 // $sql = Entry::find()->draftId($this->draftId)->anyStatus()->getRawSql();
-                $title = 'Draft not found ' . $$this->draftId;
+                $title = 'Draft not found ' . $this->draftId;
               } else {
                 $title = $draft->title;
+                // $edit_url = $draft->getCpEditUrl();
+                // make sure CP URL points to draft
+                $edit_url = UrlHelper::url($draft->getCpEditUrl(), [
+                    'draftId' => $this->draftId,
+                    'fresh' => 1,
+                ]);
               }
               // $title .= ' ' . $this->getOwner()->title; // alternate means of getting title
-              $edit_url = $this->getCpEditUrl();
+              
               // JO: temp fix for PTC entries
               if($edit_url && $draft){
                 return '<a href="' . $edit_url . '">' . $title . '</a>';

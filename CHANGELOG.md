@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v1.1.11 alpha - 2020-04-01
+### Fixed
+- Assured that all drafts can be displayed in Overview tab
+- Overview tab: get correct CP URL for Title columns
+- Entry sidebar: template value checks and fallbacks for situations when notes don't have propper values
+
+### Added
+- Overview tab: ability to select only Submissions that are ready for review. Includes selecting submissions by State Name, because state IDs vary by workflow. 
+
 ## v1.1.10 - 2020-03-03
 ### Fixed
 - Temp fix to allow Users who can't use workflows to view drafts.

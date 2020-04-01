@@ -12,6 +12,7 @@ class SubmissionQuery extends ElementQuery
     public $ownerSiteId;
     public $draftId;
     public $stateId;
+    public $stateName;
     public $versionId;
     public $editorId;
     public $publisherId;
@@ -41,6 +42,11 @@ class SubmissionQuery extends ElementQuery
       $this->stateId = $value;
       return $this;
     }
+    public function stateName($value)
+    {
+      $this->stateName = $value;
+      return $this;
+    }
 
     public function ownerSiteId($value)
     {
@@ -68,7 +74,13 @@ class SubmissionQuery extends ElementQuery
 
         $this->query->select([
             'lynnworkflow_submissions.*',
+            // '{{%lynnworkflow_states}}.*',
         ]);
+        // $this->enabledForSite(true);
+
+        // if ($this->ownerSiteId){
+        //     $this->siteId = $this->ownerSiteId;
+        // }
 
         if ($this->ownerId) {
             $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.ownerId', $this->ownerId));
@@ -82,11 +94,18 @@ class SubmissionQuery extends ElementQuery
           $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.versionId', $this->versionId));
         }
 
+        if ($this->stateName){
+            // join with states table and select records with matchng `name`
+            $this->innerJoin('{{%lynnworkflow_states}} `lynnworkflow_states`', 'lynnworkflow_submissions.`stateId` = lynnworkflow_states.`id`')
+                ->andWhere(Db::parseParam('lynnworkflow_states.name', $this->stateName));
+        }
+
         if ($this->stateId) {
           $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.stateId', $this->stateId));
         }
 
         if ($this->ownerSiteId) {
+            // Should join with `elements_sites` table on elementId and select `siteid` that matches`ownerSiteId`
             $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.ownerSiteId', $this->ownerSiteId));
         }
 

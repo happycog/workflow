@@ -124,7 +124,8 @@ class LynnWorkflow extends Plugin
                 $model->editorId = $user->id;
                 $model->stateId = $default_workflow_state;
                 $model->dateCreated = new DateTime();
-                Craft::$app->getElements()->saveElement($model);
+                // $model->siteIds = [2];
+                Craft::$app->getElements()->saveElement($model, true, false); // $propagate=false Whether the element should be saved across all of its supported sites
               }
             }
             else { // empty($existing_submission

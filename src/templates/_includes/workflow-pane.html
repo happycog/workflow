@@ -205,8 +205,8 @@ Provides a sidebar pane for the entry edit page
                     <h3>Previous notes:</h3>
                     {% for note in submission.notes|reverse %}
                     <p>
-                      <span style="font-size:0.7em;"><em>Transition "{{ note.current_transition }}" from {{ note.current_state }} to {{ note.target_state }}</em></span><br />
-                      {{ note.note }}
+                      <span style="font-size:0.7em;"><em>Transition "{{ note.current_transition|default('unknown') }}" from {{ note.current_state|default('unknown') }} to {{ note.target_state|default('unknown') }}</em></span><br />
+                      {{ note.note|default('????') }}
                     </p>
                     {% endfor %}
                   {% endif %}

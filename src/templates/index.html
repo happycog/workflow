@@ -1,9 +1,10 @@
 {% set parentLayout = '_layouts/elementindex' %}
 {% extends 'lynnworkflow/_layouts' %}
+{% set showSiteMenu = true %}
 
 {% set crumbs = [
     { label: 'Lynn Workflow' | t('lynnworkflow'), url: url('lynnworkflow') },
-    { label: 'Overview' | t('lynnworkflow'), url: url('lynnworkflow') },
+    { label: 'Overview' | t('lynnworkflow'), url: url('lynnworkflow') }
 ] %}
 
 {% set elementType = 'therefinery\\lynnworkflow\\elements\\Submission' %}
