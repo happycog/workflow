@@ -68,16 +68,7 @@ class Submission extends Element
 
     public static function isLocalized(): bool
     {
-        return true;
-    }
-
-    public function getSupportedSites(): array
-    {
-        // if(is_array($this->siteIds)){
-        //     return $this->siteIds;
-        // }else{
-            return parent::getSupportedSites();
-        // }
+        return false;
     }
 
     public static function hasStatuses(): bool
@@ -259,7 +250,6 @@ class Submission extends Element
             'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
             'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
             'stateId' => ['label' => Craft::t('lynnworkflow', 'Current State')],
-            'siteId' => ['label' => Craft::t('lynnworkflow', 'Sites')],
         ];
     }
 

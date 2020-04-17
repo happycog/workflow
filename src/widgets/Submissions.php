@@ -12,6 +12,7 @@ class Submissions extends Widget
     // =========================================================================
 
     public $limit = 10;
+    public $siteId = 1;
 
 
     // Public Methods
