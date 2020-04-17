@@ -83,6 +83,7 @@ class LynnWorkflow extends Plugin
             $settings = LynnWorkflow::$plugin->getSettings();
             $draft = $event->draft; // `createDraft` function saves a draft with ID then calls EVENT_AFTER_CREATE_DRAFT
             $draft_id = $draft->draftId;
+            $siteId = $draft->siteId;
             
             // Is this a new draft (aka, it doesn't have an entry in submissions?)
             $existing_submission = Submission::find()
@@ -124,7 +125,7 @@ class LynnWorkflow extends Plugin
                 $model->editorId = $user->id;
                 $model->stateId = $default_workflow_state;
                 $model->dateCreated = new DateTime();
-                // $model->siteIds = [2];
+                $model->siteId = $siteId;
                 Craft::$app->getElements()->saveElement($model, true, false); // $propagate=false Whether the element should be saved across all of its supported sites
               }
             }

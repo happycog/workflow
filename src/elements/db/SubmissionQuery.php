@@ -76,6 +76,7 @@ class SubmissionQuery extends ElementQuery
             'lynnworkflow_submissions.*',
             // '{{%lynnworkflow_states}}.*',
         ]);
+        $this->enabledForSite(false);
         // $this->enabledForSite(true);
 
         // if ($this->ownerSiteId){
@@ -106,7 +107,8 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->ownerSiteId) {
             // Should join with `elements_sites` table on elementId and select `siteid` that matches`ownerSiteId`
-            $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.ownerSiteId', $this->ownerSiteId));
+            // $this->subQuery->andWhere(Db::parseParam('elements_sites.siteId', $this->ownerSiteId));
+            $this->siteId = $this->ownerSiteId;
         }
 
         if ($this->editorId) {

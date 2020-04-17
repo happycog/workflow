@@ -12,6 +12,7 @@ class Submissions extends Widget
     // =========================================================================
 
     public $limit = 10;
+    public $siteId = 1;
 
 
     // Public Methods
@@ -27,9 +28,16 @@ class Submissions extends Widget
         return Craft::getAlias('@therefinery/lynnworkflow/icon-mask.svg');
     }
 
+    public function getTitle(): string
+    {
+        $siteName = Craft::$app->sites->getSiteById($this->siteId)->name;
+        return $siteName . ' ' .Craft::t('lynnworkflow', 'Workflow Submissions');
+    }
+
     public function getBodyHtml()
     {
         $submissionQuery = Submission::find()
+            ->ownerSiteId($this->siteId)
             ->limit($this->limit);
 
         $submissions = $submissionQuery->all();
@@ -37,7 +45,8 @@ class Submissions extends Widget
 
         return Craft::$app->getView()->renderTemplate('lynnworkflow/_components/widgets/body', [
             'submissions' => $submissions,
-            'sql' => $sql
+            'sql' => $sql,
+            'siteId' => $this->siteId
         ]);
     }
 

@@ -68,7 +68,7 @@ class Submission extends Element
 
     public static function isLocalized(): bool
     {
-        return true;
+        return false;
     }
 
     public function getSupportedSites(): array
@@ -76,7 +76,7 @@ class Submission extends Element
         // if(is_array($this->siteIds)){
         //     return $this->siteIds;
         // }else{
-            return parent::getSupportedSites();
+            return [['siteId' => 1, 'enabledByDefault' => true], ['siteId' => 2, 'enabledByDefault' => true]];  //parent::getSupportedSites();
         // }
     }
 
@@ -111,11 +111,27 @@ class Submission extends Element
                 ]
             ],
             [
+                'key' => 'allLynnU',
+                'label' => Craft::t('lynnworkflow', 'All Lynn U submissions'),
+                'criteria' => [
+                    'enabledForSite' => true,
+                    'ownerSiteId' => 1,
+                ]
+            ],
+            [
+                'key' => 'allPTC',
+                'label' => Craft::t('lynnworkflow', 'All Pinetree Camp submissions'),
+                'criteria' => [
+                    'enabledForSite' => true,
+                    'ownerSiteId' => 2,
+                ]
+            ],
+            [
                 'key' => 'review',
                 'label' => 'Ready for review',
                 'criteria' => [
                     'stateName' => 'Review',
-                    'enabledForSite' => true,
+                    'siteId' => 1,
                 ]
             ]
         ];

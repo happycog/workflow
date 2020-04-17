@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.12-beta]
+### Added
+- ??? Widget: add ability to filter submissions by site assigned to entry
+
 ## v1.1.11 alpha - 2020-04-01
 ### Fixed
 - Assured that all drafts can be displayed in Overview tab
