@@ -15,7 +15,11 @@ class Submissions extends Component
 
     public function getSubmissionById(int $id)
     {
-        return Craft::$app->getElements()->getElementById($id, Submission::class);
+        // return Craft::$app->getElements()->getElementById($id, Submission::class);
+        $submissionQuery = Submission::find()->ownerSiteId('*')->id($id);
+        $sql = $submissionQuery->getRawSql();
+        // var_dump($sql);
+        return $submissionQuery->one();
     }
 
     public function transitionSubmission(Submission $model, $draft, $publish)

@@ -167,7 +167,8 @@ class SubmissionsController extends Controller
         $this->requireLogin();
 
         $context = array();
-        $context['entry'] = Craft::$app->getEntryRevisions()->getDraftById($sbEdraftId);
+        // $context['entry'] = Craft::$app->getEntryRevisions()->getDraftById($sbEdraftId);
+        $context['entry'] = Entry::find()->draftId($sbEdraftId)->anyStatus()->site('*')->one();
         $context['entryId'] = $sbEntryId;
         $context['draftId'] = $sbEdraftId;
         $context['section'] = $context['entry']->section;
@@ -231,8 +232,8 @@ class SubmissionsController extends Controller
 
         // render a copy of the draft content
         // $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
-        $draft_model = Entry::find()->draftId($draftId)->anyStatus()->site('*')->one();
         // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
+        $draft_model = Entry::find()->draftId($draftId)->anyStatus()->site('*')->one();
 
         $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
 

@@ -71,6 +71,15 @@ class Submission extends Element
         return false;
     }
 
+    public function getSupportedSites(): array
+    {
+        // if(is_array($this->siteIds)){
+        //     return $this->siteIds;
+        // }else{
+            return [['siteId' => 1, 'enabledByDefault' => true], ['siteId' => 2, 'enabledByDefault' => true]];  //parent::getSupportedSites();
+        // }
+    }
+
     public static function hasStatuses(): bool
     {
         return true;
@@ -98,15 +107,39 @@ class Submission extends Element
                 'key' => '*',
                 'label' => Craft::t('lynnworkflow', 'All submissions'),
                 'criteria' => [
-                    'enabledForSite' => true,
+                    // 'enabledForSite' => true,
                 ]
             ],
             [
-                'key' => 'review',
-                'label' => 'Ready for review',
+                'key' => 'allLynnU',
+                'label' => Craft::t('lynnworkflow', 'All Lynn U submissions'),
+                'criteria' => [
+                    'enabledForSite' => true,
+                    'ownerSiteId' => 1,
+                ]
+            ],
+            [
+                'key' => 'reviewLynnU',
+                'label' => 'Lynn U for review',
                 'criteria' => [
                     'stateName' => 'Review',
+                    'ownerSiteId' => 1,
+                ]
+            ],
+            [
+                'key' => 'allPTC',
+                'label' => Craft::t('lynnworkflow', 'All Pinetree Camp submissions'),
+                'criteria' => [
                     'enabledForSite' => true,
+                    'ownerSiteId' => 2,
+                ]
+            ],
+            [
+                'key' => 'reviewPTC',
+                'label' => Craft::t('lynnworkflow', 'Pinetree Camp for review'),
+                'criteria' => [
+                    'stateName' => 'Review',
+                    'ownerSiteId' => 2,
                 ]
             ]
         ];
@@ -250,7 +283,12 @@ class Submission extends Element
             'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
             'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
             'stateId' => ['label' => Craft::t('lynnworkflow', 'Current State')],
+            'siteId' => ['label' => Craft::t('lynnworkflow', 'Site ID')],
         ];
+    }
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        return ['id', 'draftTitle', 'editor', 'dateCreated', 'stateId'];
     }
 
     protected static function defineSortOptions(): array

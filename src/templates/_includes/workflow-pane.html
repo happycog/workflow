@@ -251,9 +251,10 @@ Provides a sidebar pane for the entry edit page
   {% endif %}
   {% js js %}
 {% endif %}
-{# Context: <pre>{{ context|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
-{# Sections: <pre>{{ craft.app.request.segments|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-Entry Section/Type: {{ context.entry.section.handle }} / {{ context.entry.type.handle }} <br> #}
+{# Context entry: <pre>{{ context.entry|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+{# submissions: <pre>{{ submissions|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+{# Sections: <pre>{{ craft.app.request.segments|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre> #}
+{# Entry Section/Type: {{ context.entry.section.handle }} / {{ context.entry.type.handle }} <br> #}
 {# Entry ID: {{ context.entry.id }} <br> #}
 {# Allow Save: {{ allowSave }} <br> #}
 {# permissionSuffix: {{ permissionSuffix }} <br> #}

@@ -118,10 +118,12 @@ class Service extends Component
         $submissions = Submission::find() // JO: uses lynnworkflow\elements\db\SubmissionQuery
           // ->ownerId($context['entry']->id) // which user should this be? the creater of the draft?
           ->versionId($context['versionId'])
+          ->site('*')
           ->all();
       }
       else if ($draftId) {
         $submissionsQuery = Submission::find()
+          ->ownerSiteId($context['entry']->siteId)
           // ->ownerId($context['entry']->id)
           ->draftId($draftId);
         $submissions = $submissionsQuery->all();
@@ -129,7 +131,7 @@ class Service extends Component
       }
       $has_existing_drafts = FALSE;
       // $existing_drafts = Craft::$app->entryRevisions->getDraftsByEntryId($context['entry']->id); // Deprecated
-      $existing_drafts = Entry::find()->drafts()->id($context['entry']->id)->all();
+      $existing_drafts = Entry::find()->site('*')->drafts()->id($context['entry']->id)->all();
       if (!empty($existing_drafts)) {
         $has_existing_drafts = TRUE;
       }
@@ -160,7 +162,7 @@ class Service extends Component
           'hasExistingDrafts' => $has_existing_drafts,
           'orgEntryId' => $context['entryId'],
           'draftId' => $draftId,
-          'ajax' => isset($context['ajax']) ? $context['ajax'] : false,
+          'ajax' => isset($context['ajax']) ? $context['ajax'] : false
 
           // ,'wfsettings' => $settings
           // ,'subSQL' => $subSQL
