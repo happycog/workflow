@@ -167,7 +167,8 @@ class SubmissionsController extends Controller
         $this->requireLogin();
 
         $context = array();
-        $context['entry'] = Craft::$app->getEntryRevisions()->getDraftById($sbEdraftId);
+        // $context['entry'] = Craft::$app->getEntryRevisions()->getDraftById($sbEdraftId);
+        $context['entry'] = Entry::find()->draftId($sbEdraftId)->anyStatus()->site('*')->one();
         $context['entryId'] = $sbEntryId;
         $context['draftId'] = $sbEdraftId;
         $context['section'] = $context['entry']->section;
@@ -186,7 +187,8 @@ class SubmissionsController extends Controller
      */
     public function actionDiff($diffEntryId = NULL, $draftId = NULL)
     {
-        $pageInfo = Craft::$app->entries->getEntryById($diffEntryId);
+        // $pageInfo = Craft::$app->entries->getEntryById($diffEntryId);
+        $pageInfo = Entry::find()->id($diffEntryId)->anyStatus()->site('*')->one();
 
         $this->view->registerAssetBundle(LynnWorkflowAsset::class);
 
@@ -212,7 +214,8 @@ class SubmissionsController extends Controller
         // $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
 
         // render a copy of the live content
-        $live_model = Craft::$app->entries->getEntryById($entryId);
+        // $live_model = Craft::$app->entries->getEntryById($entryId);
+        $live_model = Entry::find()->id($entryId)->anyStatus()->site('*')->one();
         $section = $live_model->getSection();
         $type = $live_model->getType();
         if (!$section || !$type) {
@@ -222,14 +225,15 @@ class SubmissionsController extends Controller
         }
 
         $diff['siteId'] = $live_model->siteId;
-        $diff['section'] = $live_model->getSection()->getSiteSettings()[1]->siteId;
-        $diff['template'] = $live_model->getSection()->getSiteSettings()[1]->template;
+        $diff['section'] = $live_model->getSection()->getSiteSettings()[$live_model->siteId]->siteId;
+        $diff['template'] = $live_model->getSection()->getSiteSettings()[$live_model->siteId]->template;
 
         $diff['live'] = strval($this->_templateEntry($live_model, $templateMode));
 
         // render a copy of the draft content
-        $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
+        // $draft_model = Craft::$app->getEntryRevisions()->getDraftById($draftId); //deprecated
         // $draft_model = \craft\elements\Entry::find()->draftId($context['draftId'])->one(); // `draftId()` not defined
+        $draft_model = Entry::find()->draftId($draftId)->anyStatus()->site('*')->one();
 
         $diff['draft'] = strval($this->_templateEntry($draft_model, $templateMode));
 

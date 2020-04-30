@@ -107,7 +107,7 @@ class Submission extends Element
                 'key' => '*',
                 'label' => Craft::t('lynnworkflow', 'All submissions'),
                 'criteria' => [
-                    'enabledForSite' => true,
+                    // 'enabledForSite' => true,
                 ]
             ],
             [
@@ -115,6 +115,14 @@ class Submission extends Element
                 'label' => Craft::t('lynnworkflow', 'All Lynn U submissions'),
                 'criteria' => [
                     'enabledForSite' => true,
+                    'ownerSiteId' => 1,
+                ]
+            ],
+            [
+                'key' => 'reviewLynnU',
+                'label' => 'Lynn U for review',
+                'criteria' => [
+                    'stateName' => 'Review',
                     'ownerSiteId' => 1,
                 ]
             ],
@@ -127,11 +135,11 @@ class Submission extends Element
                 ]
             ],
             [
-                'key' => 'review',
-                'label' => 'Ready for review',
+                'key' => 'reviewPTC',
+                'label' => Craft::t('lynnworkflow', 'Pinetree Camp for review'),
                 'criteria' => [
                     'stateName' => 'Review',
-                    'siteId' => 1,
+                    'ownerSiteId' => 2,
                 ]
             ]
         ];
@@ -275,8 +283,12 @@ class Submission extends Element
             'editor' => ['label' => Craft::t('lynnworkflow', 'Editor')],
             'dateCreated' => ['label' => Craft::t('lynnworkflow', 'Date Submitted')],
             'stateId' => ['label' => Craft::t('lynnworkflow', 'Current State')],
-            'siteId' => ['label' => Craft::t('lynnworkflow', 'Sites')],
+            'siteId' => ['label' => Craft::t('lynnworkflow', 'Site ID')],
         ];
+    }
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        return ['id', 'draftTitle', 'editor', 'dateCreated', 'stateId'];
     }
 
     protected static function defineSortOptions(): array

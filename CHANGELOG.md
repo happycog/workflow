@@ -4,9 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.12-beta]
+## v1.1.12 - 2020-04-30
 ### Added
-- ??? Widget: add ability to filter submissions by site assigned to entry
+- Moved code used in multisite branch and fixed bugs
+- Widget: made site selectable and show proper title and links
+- Overview: Filter submissions by Site and Status. Made Site ID column optional
+
+### Fixed
+- Sidebar: `actionExecuteTransition` was unable to fetch Submission by ID when submission was from PTC. Rewrote `getSubmissionById` so it could work cross site.
+
+## v1.1.11 - 2020-04-17
+### Removed
+- Code used to provide multisite capability (now in multisite branch)
+
+### Fixed
+- Assured that diff could work with PTC entries by having queries search all sites
 
 ## v1.1.11 alpha - 2020-04-01
 ### Fixed

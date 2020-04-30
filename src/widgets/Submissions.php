@@ -38,6 +38,7 @@ class Submissions extends Widget
     {
         $submissionQuery = Submission::find()
             ->ownerSiteId($this->siteId)
+            ->site('*')
             ->limit($this->limit);
 
         $submissions = $submissionQuery->all();
