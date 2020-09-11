@@ -93,7 +93,13 @@ class LynnWorkflow extends Plugin
               // Create a submission record for this new draft
               
               // Get the ID number for the latest version if exists (stored in Submission)
-              $entry_id = Craft::$app->request->getParam('entryId');
+              // CMS v3.5+ uses 'sourceId' in draft post requests
+              if (Craft::$app->request->getParam('sourceId')) {
+                $entry_id = Craft::$app->request->getParam('sourceId');
+              } else{
+                $entry_id = Craft::$app->request->getParam('entryId');
+              }
+              
               $version_id = NULL;
               $latestVersion = Entry::find()->revisionOf($entry_id)->addOrderBy('id DESC')->one();
               if (!empty($versions)) {
