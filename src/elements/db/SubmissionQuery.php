@@ -105,7 +105,7 @@ class SubmissionQuery extends ElementQuery
           $this->subQuery->andWhere(Db::parseParam('lynnworkflow_submissions.stateId', $this->stateId));
         }
 
-        if ($this->ownerSiteId) {
+        if ($this->ownerSiteId && $this->ownerSiteId!='*') {
             // Should join with `elements_sites` table on elementId and select `siteid` that matches`ownerSiteId`
             // $this->subQuery->andWhere(Db::parseParam('elements_sites.siteId', $this->ownerSiteId));
             $this->siteId = $this->ownerSiteId;

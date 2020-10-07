@@ -44,6 +44,8 @@ class BaseController extends Controller
         $this->requirePostRequest();
         $user = Craft::$app->getUser()->getIdentity();
         $submission_id = Craft::$app->request->getParam('submissionId');
+        $siteId = Craft::$app->request->getParam('siteId');
+        
         $fields = Craft::$app->request->getParam('fields');
         
 
@@ -92,7 +94,7 @@ class BaseController extends Controller
         $cleaned_notes['note'] = $notes;
         $editor_id = $user->id;
         // Instantiate the model.
-        $model = LynnWorkflow::$plugin->getSubmissions()->getSubmissionById($submission_id);
+        $model = LynnWorkflow::$plugin->getSubmissions()->getSubmissionById($submission_id, $siteId);
         $model->editorId = $editor_id;
         $model->dateUpdated = new DateTime;
         $model->notes = $cleaned_notes;

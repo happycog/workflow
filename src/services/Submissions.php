@@ -13,10 +13,10 @@ class Submissions extends Component
     // Public Methods
     // =========================================================================
 
-    public function getSubmissionById(int $id)
+    public function getSubmissionById(int $id, $siteId = '*')
     {
         // return Craft::$app->getElements()->getElementById($id, Submission::class);
-        $submissionQuery = Submission::find()->ownerSiteId('*')->id($id);
+        $submissionQuery = Submission::find()->ownerSiteId($siteId)->id($id);
         $sql = $submissionQuery->getRawSql();
         // var_dump($sql);
         return $submissionQuery->one();
