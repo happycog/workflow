@@ -82,6 +82,7 @@ class LynnWorkflow extends Plugin
             // Get settings for workflows.
             $settings = LynnWorkflow::$plugin->getSettings();
             $draft = $event->draft; // `createDraft` function saves a draft with ID then calls EVENT_AFTER_CREATE_DRAFT
+            $entry_id = $event->source->id;
             $draft_id = $draft->draftId;
             $siteId = $draft->siteId;
             
@@ -91,14 +92,6 @@ class LynnWorkflow extends Plugin
               ->all();
             if (empty($existing_submission)) {
               // Create a submission record for this new draft
-              
-              // Get the ID number for the latest version if exists (stored in Submission)
-              // CMS v3.5+ uses 'sourceId' in draft post requests
-              if (Craft::$app->request->getParam('sourceId')) {
-                $entry_id = Craft::$app->request->getParam('sourceId');
-              } else{
-                $entry_id = Craft::$app->request->getParam('entryId');
-              }
               
               $version_id = NULL;
               $latestVersion = Entry::find()->revisionOf($entry_id)->addOrderBy('id DESC')->one();
