@@ -1,5 +1,5 @@
 {
-    "name": "therefinery/lynnworkflow",
+    "name": "lynnuniversity/lynnworkflow",
     "description": "Workflow solution for Lynn University",
     "type": "craft-plugin",
     "keywords": [
@@ -10,14 +10,13 @@
         "lynn workflow"
     ],
     "support": {
-        "docs": "https://github.com/the-refinery/workflow/blob/master/README.md",
-        "issues": "https://github.com/the-refinery/workflow/issues"
+        "docs": "https://github.com/happycog/workflow/blob/master/README.md"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": "The Refinery",
-            "homepage": "https://github.com/the-refinery"
+            "name": "Lynn University",
+            "homepage": "https://www.lynn.edu"
         }
     ],
     "require": {
@@ -34,7 +33,7 @@
         "schemaVersion": "2.0.0",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://github.com/the-refinery/workflow/blob/master/CHANGELOG.md",
+        "changelogUrl": "https://github.com/happycog/workflow/blob/master/CHANGELOG.md",
         "class": "therefinery\\lynnworkflow\\LynnWorkflow"
     }
 }
