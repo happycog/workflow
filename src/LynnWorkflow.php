@@ -95,7 +95,7 @@ class LynnWorkflow extends Plugin
               
               $version_id = NULL;
               $latestVersion = Entry::find()->revisionOf($entry_id)->addOrderBy('id DESC')->one();
-              if (!empty($versions)) {
+              if (!empty($latestVersion)) {
                 $version_id = $latestVersion->versionId;
               }
 
