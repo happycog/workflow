@@ -92,12 +92,8 @@ class LynnWorkflow extends Plugin
               ->all();
             if (empty($existing_submission)) {
               // Create a submission record for this new draft
-              
-              $version_id = NULL;
-              $latestVersion = Entry::find()->revisionOf($entry_id)->addOrderBy('id DESC')->one();
-              if (!empty($latestVersion)) {
-                $version_id = $latestVersion->versionId;
-              }
+
+              $version_id = $event->source->getCurrentRevision()->id ?? null;
 
               $section_id = $draft->sectionId;
               $type_id = $draft->typeId;
