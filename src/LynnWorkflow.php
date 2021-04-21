@@ -72,62 +72,21 @@ class LynnWorkflow extends Plugin
             $event->sender->set('lynnworkflow', LynnWorkflowVariable::class);
         });
 
-        
-        Event::on( // https://craftcms.stackexchange.com/questions/26797/user-events-in-craft-3
-          Drafts::class,
-          Drafts::EVENT_AFTER_CREATE_DRAFT,
-          function (DraftEvent $event) {
-            $user = Craft::$app->getUser()->getIdentity();
-            
-            // Get settings for workflows.
-            $settings = LynnWorkflow::$plugin->getSettings();
-            $draft = $event->draft; // `createDraft` function saves a draft with ID then calls EVENT_AFTER_CREATE_DRAFT
-            $entry_id = $event->source->id;
-            $draft_id = $draft->draftId;
-            $siteId = $draft->siteId;
-            
-            // Is this a new draft (aka, it doesn't have an entry in submissions?)
-            $existing_submission = Submission::find()
-              ->draftId($draft_id)
-              ->all();
-            if (empty($existing_submission)) {
-              // Create a submission record for this new draft
 
-              $version_id = $event->source->getCurrentRevision()->id ?? null;
+        Event::on(
+            Drafts::class,
+            Drafts::EVENT_AFTER_CREATE_DRAFT,
+            function (DraftEvent $event) {
+                $existingSubmission = Submission::find()
+                                                ->draftId($event->draft->draftId)
+                                                ->all();
 
-              $section_id = $draft->sectionId;
-              $type_id = $draft->typeId;
+                if (!empty($existing_submission)) {
+                    return false;
+                }
 
-              // Check to see if there's a valid workflow for this section/type:
-              $enabled_workflows = $settings->enabledWorkflows;
-              $enabled_workflow = FALSE;
-              // See if an entry exists for the sectionId-typeId.
-              if (!empty($enabled_workflows[$section_id . '-' . $type_id])) {
-                $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id . '-' . $type_id], Workflow::class);
-              }
-              else if (!empty($enabled_workflows[$section_id])) {
-                $enabled_workflow = Craft::$app->getElements()->getElementById($enabled_workflows[$section_id], Workflow::class);
-              }
-              if ($enabled_workflow) {
-                // Get the default state.
-                $default_workflow_state = $enabled_workflow->defaultState;
-
-                // Determine the default state id from the workflow.
-                $model = new Submission();
-                $model->ownerId = $entry_id;
-                $model->draftId = $draft_id;
-                $model->versionId = $version_id;
-                $model->editorId = $user->id;
-                $model->stateId = $default_workflow_state;
-                $model->dateCreated = new DateTime();
-                $model->siteId = $siteId;
-                Craft::$app->getElements()->saveElement($model, true, false); // $propagate=false Whether the element should be saved across all of its supported sites
-              }
+                LynnWorkflow::getInstance()->submissions->createFromDraft($event->draft);
             }
-            else { // empty($existing_submission
-              // Should we do something when there's a state?
-            }
-          }
         );
         // Do something after we're installed
         // Event::on(

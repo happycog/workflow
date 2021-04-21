@@ -34,6 +34,27 @@ class Workflows extends Component
     }
 
 
+    /**
+     * @param int $sectionId
+     * @param int $typeId
+     * @return false
+     */
+    public function getWorkflowForSection($sectionId, $typeId)
+    {
+        $settings = LynnWorkflow::$plugin->getSettings();
+        foreach([
+                    $sectionId . '-' . $typeId,
+                    $sectionId
+                ] as $key) {
+            $workflowId = $settings->enabledWorkflows[$key] ?? false;
+            if ($workflowId){
+                return Craft::$app->getElements()->getElementById($workflowId, Workflow::class);
+            }
+        }
+        return null;
+    }
+
+
     // Private Methods
     // =========================================================================
 
