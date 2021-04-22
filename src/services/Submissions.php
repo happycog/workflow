@@ -1,6 +1,7 @@
 <?php
 namespace therefinery\lynnworkflow\services;
 
+use craft\elements\Entry;
 use therefinery\lynnworkflow\LynnWorkflow;
 use therefinery\lynnworkflow\elements\Submission;
 
@@ -12,6 +13,25 @@ class Submissions extends Component
 {
     // Public Methods
     // =========================================================================
+
+    public function createFromDraft(Entry $draft)
+    {
+        $enabledWorkflow = LynnWorkflow::getInstance()->workflows->getWorkflowForSection($draft->sectionId, $draft->typeId);
+
+        if (!$enabledWorkflow) {
+            return false;
+        }
+
+        $model = new Submission();
+        $model->ownerId = $draft->getSource()->id  ?? null;
+        $model->draftId = $draft->draftId;
+        $model->versionId = $draft->getSource()->getCurrentRevision()->id  ?? null;
+        $model->editorId = Craft::$app->getUser()->getIdentity()->id  ?? null;
+        $model->stateId = $enabledWorkflow->defaultState;
+        $model->dateCreated = new \DateTime();
+        $model->siteId = $draft->siteId;
+        Craft::$app->getElements()->saveElement($model, true, false);
+    }
 
     public function getSubmissionById(int $id, $siteId = '*')
     {
